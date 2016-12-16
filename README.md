@@ -31,6 +31,7 @@ I decided against using "Observables" as "Subjects" [*already are*](http://stack
 - issue `npm link rxjs-socket.io`
 
 #### Todo
+- Testing
 - Docx
 - Example
 - Publish
