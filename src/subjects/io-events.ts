@@ -20,8 +20,9 @@ export class ioEvent {
     public get isUnique() {return this.event.once === true; }
     public get name() {return this.event.name; }
 
-    /** */
-    public get onUpdate() {return this._onUpdate;}
+    /** Make it so it's not callable from the outside
+     * so we don't have to worry about lost callbacks and binds */
+    private get onUpdate() {return this._onUpdate;}
 
     /** hook() is an alias to `socket.on()` or `socket.once()` depending on the provided `IoEventInfo` */
     public hook(clientSocket) :void {
@@ -47,7 +48,7 @@ export class ioEvent {
     public get lastEvent() {return this._lastEvent.getValue(); }
 
     /** ioEvent.onUpdate will be called with `newData` if it's truthy */
-    public set onUpdate(fn: Function) {
+    private set onUpdate(fn: Function) {
         this._onUpdate = fn;
     }
 }
