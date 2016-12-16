@@ -20,13 +20,15 @@ export class IO {
     private _connected: boolean = false;
 
     constructor() {}
-
+    
+    /** a reference to the raw socket returned from io(), if connected */
+    public get raw() { return this.connected && this.socket }
+    
     /** a reference to the subscription .getValue() */
     public get socketState() {return this._socketState.getValue(); }
 
     /** an alias for Socket.emit() */
     public emit(eventName: string, data: Object) {
-        console.log(this.connected)
         if (this.connected) {
             this.socket.emit(eventName, data);
         }
