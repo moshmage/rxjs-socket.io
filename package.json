@@ -1,0 +1,21 @@
+{
+  "name": "rxjs-socket.io",
+  "version": "0.5.0",
+  "description": "wraps socket.io-client into behavior subjects called ioEvents",
+  "main": "dist/index.js",
+  "typings":  "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc src/index.ts"
+  },
+  "author": "moshmage@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "rxjs": "^5.0.1",
+    "socket.io-client": "^1.7.2"
+  },
+  "devDependencies": {
+    "@types/socket.io-client": "^1.4.29",
+    "typescript": "^2.1.4"
+  }
+}
