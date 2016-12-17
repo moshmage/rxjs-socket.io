@@ -79,12 +79,16 @@ export class IO {
     };
 
     /**
-     * If anyone makes a this.connect = false; the connection to the socket.io should be closed
-     * and another default error set.
-     * @param value
+     * check if socket is connected
      * @returns {boolean}
      */
     public get connected() {return this._connected; }
+
+    /**
+     * If anyone makes a this.connect = false; the connection to the socket.io should be closed
+     * and another default error set.
+     * @param value
+     */
     public set connected(value: boolean) {
         if (value === false && this.connected) {
             this.socket.disconnect();
@@ -92,5 +96,7 @@ export class IO {
         }
         this._connected = value;
     };
+
+    /** make sure no one messes with our stateProp */
     public set socketState(v) {return;}
 }
