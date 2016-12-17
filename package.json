@@ -3,10 +3,10 @@
   "version": "0.5.0",
   "description": "wraps socket.io-client into behavior subjects called ioEvents",
   "main": "dist/index.js",
-  "typings":  "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc src/index.ts"
+    "test": "karma start karma.conf.js",
+    "build": "tsc"
   },
   "author": "moshmage@gmail.com",
   "license": "ISC",
@@ -16,6 +16,9 @@
   },
   "devDependencies": {
     "@types/socket.io-client": "^1.4.29",
+    "karma": "^1.3.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-typescript": "^2.1.4",
     "typescript": "^2.1.4"
   }
 }
