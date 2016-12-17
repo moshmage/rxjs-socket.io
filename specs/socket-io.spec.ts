@@ -1,7 +1,7 @@
 /**
  * Created by Mosh Mage on 12/17/2016.
  */
-import {IO} from './socket-io';
+import {IO} from './../src/subjects/socket-io';
 
 describe('IO', () => {
     it ('is true', () => {
