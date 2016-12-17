@@ -18,9 +18,7 @@ module.exports = function(config) {
             "typings"
         ],
 
-        reporters: ["progress", "karma-typescript"],
-
-        browsers: ["Chrome"]
+        reporters: ["progress", "karma-typescript"]
 
     });
 };
