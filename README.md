@@ -9,24 +9,8 @@ Each ioEvent is responsible for itself, that's to say that an ioEvent is the one
 You can, and are supposed to, `extend` on the `ioEvent` Class - treat this as you would behaviors, because that's all they are.    
 Then, `extends ioEvent` and after, `this.onUpdate = (newData) => {}` to run some function *after* the update has been ran on its `ioEvent.updateData` counterpart.
 
-### Documentation 
-For now, [check the *.d.ts](rxjs-socket.io.d.ts) of the files, as the source is heavily commented;    
-When I get a typescript docs generator to run properly without barfing errors about typings, I'll make a proper gl-page. You can help with that if you want to :)
-
-#### While we haven't published you can:
-^(This will install the module as a local thingy. You'll have to manually `git pull` every once in a while to get them updates.)
-- `git clone` the source to a folder of your choosing
-- `cd to/that/folder` and issue `npm install`
-- link it good with `npm link`
-- `cd ..` ouf of there and `cd you/awesome/project`
-- issue `npm link rxjs-socket.io`
-
-#### Todo
-- Testing
-- Docx
-- ~~Example~~ there's *one* [Angular2]() example
-- Publish
-- Can I get a code review? That'd be neat.
+#### Install, Docs and Future
+Read the [project wiki](https://gitlab.com/moshmage/rxjs-socket.io/wikis/home)
 
 ---
 
