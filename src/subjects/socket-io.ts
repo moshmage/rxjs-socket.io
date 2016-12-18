@@ -13,6 +13,12 @@ export class IO {
     private events: ioEvent[] = [];
 
     private _socketState: BehaviorSubject<SocketState> = new BehaviorSubject<SocketState>(initialState);
+
+    /**
+     * The Subscribable (Observable) prop
+     * subscribe to this prop to be notified of data update
+     * @type {Observable<ReceivedEvent>}
+     */
     public event$: any = this._socketState.asObservable();
 
     /** this prop will pretty much control the "is connected" or not.
