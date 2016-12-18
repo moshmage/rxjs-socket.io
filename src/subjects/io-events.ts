@@ -23,6 +23,8 @@ export class ioEvent {
     
     constructor(public event: IoEventInfo) {
         this.event = event;
+        this.event.count = event.count || 0;
+        this.event.once = event.once || false;
     }
 
     /**

@@ -44,14 +44,17 @@ export class IO {
      * EVEN if it's a `once` event, as one change will trigger all listeners */
     public eventExists(ioEvent :ioEvent) :boolean {
         return this.events.some(_ioEvent => {
-            return !_ioEvent.hasTriggered && _ioEvent.isUnique && _ioEvent.name === ioEvent.name ||
-                !_ioEvent.isUnique && _ioEvent.name === ioEvent.name;
+            if (!_ioEvent.hasTriggered && !ioEvent.hasTriggered && ioEvent.isUnique &&
+                _ioEvent.name === ioEvent.name) return false;
+
+            return !_ioEvent.isUnique && _ioEvent.name === ioEvent.name;
         });
     }
 
     /** pushes an ioEvent to be heard */
-    public listenToEvent(ioEvent: ioEvent) :void {
-        if (!this.eventExists(ioEvent)) this.events.push(ioEvent);
+    public listenToEvent(ioEvent: ioEvent) :number {
+        if (!this.eventExists(ioEvent)) return this.events.push(ioEvent);
+        return this.events.length;
     }
 
     /**
