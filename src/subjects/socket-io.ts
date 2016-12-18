@@ -101,9 +101,9 @@ export class IO {
     public set connected(value: boolean) {
         if (value === false && this.connected) {
             this.socket.disconnect();
-            this._socketState.next({connected: false});
         }
         this._connected = value;
+        this._socketState.next({connected: value});
     };
 
     /** make sure no one messes with our stateProp */

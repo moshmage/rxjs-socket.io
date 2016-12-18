@@ -3,7 +3,7 @@
  */
 import {IO} from './socket-io';
 import {ioEvent} from './io-events';
-
+import {initialState} from "./../interfaces/socket-io";
 
 
 describe('IO', () => {
@@ -45,5 +45,26 @@ describe('IO', () => {
 
     });
     
-    describe('public coverage', () => {})
+    describe('Public coverage', () => {
+        it('socketState', () => {
+            expect(socket.socketState).toEqual(initialState);
+        });
+
+        it("raw", () => {
+            let spySocket = new IO();
+            expect(socket.raw).toBeFalsy();
+            spyOn(spySocket, 'connected').and.returnValue(true);
+            expect(spySocket.raw).toBeUndefined(); /** is undefined because .connect() wasn't issued */
+        });
+
+        it('socketState updating', () => {
+            let event$ = socket.event$;
+            let subscription = event$.subscribe((newValue) => {
+                /** I'm not reeeeaally sure this is how you test this. */
+                expect(newValue).toEqual({connected: false});
+            });
+            socket.connected = false;
+            subscription.unsubscribe();
+        });
+    });
 });
