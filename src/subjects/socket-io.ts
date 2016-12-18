@@ -64,7 +64,7 @@ export class IO {
     public connect(address?: string, forceNew?:boolean) :void {
         if (this.connected && !forceNew) return;
         else if (this.connected && forceNew) this.connected = false;
-        
+
         this.socket = io(address || SOCKET_URL);
         this.socket.on('connect', () => {
             this.connected = true;
@@ -102,5 +102,5 @@ export class IO {
         this._connected = value;
         this._socketState.next({connected: value});
     };
-
+    
 }
