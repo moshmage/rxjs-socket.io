@@ -18,7 +18,7 @@ module.exports = function(config) {
 
 
         karmaTypescriptConfig: {
-            tsconfig: 'tsconfig.json',
+            tsconfig: 'tsconfig.spec.json',
             reports: {
                 "html": "coverage",
                 "text-summary": "" // destination "" will redirect output to the console
