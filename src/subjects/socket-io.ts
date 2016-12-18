@@ -13,6 +13,12 @@ export class IO {
     private events: ioEvent[] = [];
 
     private _socketState: BehaviorSubject<SocketState> = new BehaviorSubject<SocketState>(initialState);
+
+    /**
+     * The Subscribable (Observable) prop
+     * subscribe to this prop to be notified of data update
+     * @type {Observable<ReceivedEvent>}
+     */
     public event$: any = this._socketState.asObservable();
 
     /** this prop will pretty much control the "is connected" or not.
@@ -79,12 +85,16 @@ export class IO {
     };
 
     /**
-     * If anyone makes a this.connect = false; the connection to the socket.io should be closed
-     * and another default error set.
-     * @param value
+     * check if socket is connected
      * @returns {boolean}
      */
     public get connected() {return this._connected; }
+
+    /**
+     * If anyone makes a this.connect = false; the connection to the socket.io should be closed
+     * and another default error set.
+     * @param value
+     */
     public set connected(value: boolean) {
         if (value === false && this.connected) {
             this.socket.disconnect();
@@ -92,5 +102,7 @@ export class IO {
         }
         this._connected = value;
     };
+
+    /** make sure no one messes with our stateProp */
     public set socketState(v) {return;}
 }

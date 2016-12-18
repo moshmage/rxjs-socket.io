@@ -2,16 +2,13 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es5",
-    "sourceMap": false,
-    "removeComments": false,
-    "outDir": "dist/",
-    "declaration": true,
+    "sourceMap": true,
+    "removeComments": true,
+    "outDir": "spec/",
+    "declaration": false,
     "moduleResolution": "node"
   },
   "include": [
     "src/**/*"
-  ],
-  "exclude": [
-    "**/*.spec.ts"
   ]
 }
