@@ -1,18 +1,18 @@
 import {ioEvent} from "./io-events";
 import {SocketState, initialState} from "./../interfaces/socket-io";
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {ReplaySubject} from 'rxjs/ReplaySubject';
 import * as io from 'socket.io-client';
 
 const SOCKET_URL = "http://localhost:5000";
 
 export class IO {
     /** this will be set as a reference to io.Socket */
-    private socket: any;
+    public socket: any;
 
     /** events will be used to push which events we should be listening to */
     private events: ioEvent[] = [];
 
-    private _socketState: BehaviorSubject<SocketState> = new BehaviorSubject<SocketState>(initialState);
+    private _socketState: ReplaySubject<SocketState> = new ReplaySubject<SocketState>(1);
 
     /**
      * The Subscribable (Observable) prop
@@ -29,9 +29,6 @@ export class IO {
     
     /** a reference to the raw socket returned from io(), if connected */
     public get raw() { return this.connected && this.socket }
-    
-    /** a reference to the subscription .getValue() */
-    public get socketState() {return this._socketState.getValue(); }
 
     /** an alias for Socket.emit() */
     public emit(eventName: string, data: Object) {
@@ -67,12 +64,12 @@ export class IO {
     public connect(address?: string, forceNew?:boolean) :void {
         if (this.connected && !forceNew) return;
         else if (this.connected && forceNew) this.connected = false;
-
+        
         this.socket = io(address || SOCKET_URL);
         this.socket.on('connect', () => {
             this.connected = true;
 
-            this._socketState.next({connected: true, id: this.socket.id || 1 });
+            this._socketState.next({connected: true, id: this.socket.id || 0 });
             this.events.forEach(ioEvent => {
                 /** this is where we hook our previously new()ed ioEvents to the socket.
                  * This is so we can have one listener per event. as opposed to one event
@@ -99,13 +96,11 @@ export class IO {
      * @param value
      */
     public set connected(value: boolean) {
-        if (value === false && this.connected) {
+        if (value === false && this._connected) {
             this.socket.disconnect();
         }
         this._connected = value;
         this._socketState.next({connected: value});
     };
 
-    /** make sure no one messes with our stateProp */
-    public set socketState(v) {return;}
 }

@@ -1,13 +1,16 @@
 import {IoEventInfo, initialEvent, ReceivedEvent} from "./../interfaces/socket-io";
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 export class ioEvent {
     /** this is the reference for a io() value */
     private clientSocket: any;
 
     /** the actual Rx Subject */
-    private _lastEvent: BehaviorSubject<ReceivedEvent> = new BehaviorSubject<ReceivedEvent>(initialEvent);
+    private _lastEvent: ReplaySubject<ReceivedEvent> = new ReplaySubject<ReceivedEvent>(1);
 
+    /** a reference to the last received event */
+    public lastEvent: ReceivedEvent = initialEvent;
+    
     /**
      * This function is called at every value update so extenders of ioEvent can have their own
      * logic after a new update. This should be used to update services, etc.. etc.. - please:
@@ -18,6 +21,7 @@ export class ioEvent {
         this._lastEvent.next(newData);
         this.event.count++; /** we will be using "count" has a way of knowing if it has been triggered. */
         if (this._onUpdate) this._onUpdate(newData); /** a way for us to extend properly */
+        this.lastEvent = newData;
     }
     private _onUpdate: Function;
     
@@ -79,12 +83,6 @@ export class ioEvent {
         if (this.event.once) return;
         this.clientSocket.off(this.event.name);
     }
-
-    /**
-     * a reference to the subscription .getValue()
-     * @returns {ReceivedEvent}
-     */
-    public get lastEvent() {return this._lastEvent.getValue(); }
 
     /**
      * This function acts as a prive to make actions when your extended ioEvent
