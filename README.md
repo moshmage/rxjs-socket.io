@@ -17,8 +17,6 @@ Read the [project wiki](https://gitlab.com/moshmage/rxjs-socket.io/wikis/home)
 ### Thanks to
 - http://stackoverflow.com/questions/34376854/delegation-eventemitter-or-observable-in-angular2/35568924#35568924
 - http://www.syntaxsuccess.com/viewarticle/socket.io-with-rxjs-in-angular-2.0
-- ### All in all
-RxJs is indeed useful, besides fun. and you can "see" the EventEmitter base in it which kinda helps understand the "Subject" of it all.
 
 ###### pet peeves
 I decided against using "Observables" as "Subjects" [*already are*](http://stackoverflow.com/questions/34376854/delegation-eventemitter-or-observable-in-angular2/35568924#35568924)...
