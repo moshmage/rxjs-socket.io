@@ -27,7 +27,7 @@ When I get a typescript docs generator to run properly without barfing errors ab
 - ~~Example~~ there's *one* [Angular2]() example
 - Publish
 - Can I get a code review? That'd be neat.
-- 
+
 ---
 
 ### Thanks to
