@@ -6,7 +6,8 @@
   "typings": "dist/index.d.ts",
   "scripts": {
     "test": "karma start karma.conf.js && rm -rf spec/",
-    "build": "tsc"
+    "prebuild": "npm run test",
+    "build": "ntsc"
   },
   "author": "moshmage@gmail.com",
   "license": "ISC",
