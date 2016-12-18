@@ -20,7 +20,7 @@ RxJs is indeed useful, besides fun. and you can "see" the EventEmitter base in i
 I decided against using "Observables" as "Subjects" [*already are*](http://stackoverflow.com/questions/34376854/delegation-eventemitter-or-observable-in-angular2/35568924#35568924)...
 > Observable (so we can subscribe() to it) and an Observer (so we can call next() on it to emit a new value).
 
-^(I'm still working on documentation and such, the source is heavily descriptive: go read that instead.)
+### "Documentation" on [wiki](rxjs-socket.io.d.ts)
 
 #### While we haven't published you can:
 ^(This will install the module as a local thingy. You'll have to manually `git pull` every once in a while to get them updates.)
