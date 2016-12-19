@@ -6,8 +6,7 @@
     "removeComments": false,
     "declaration": true,
     "moduleResolution": "node",
-    "outDir": "dist/",
-    "declarationDir": "types/"
+    "outDir": "dist/"
   },
   "include": [
     "src/**/*"
