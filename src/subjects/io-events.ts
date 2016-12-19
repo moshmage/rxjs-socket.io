@@ -56,9 +56,8 @@ export class ioEvent {
      */
     public get name() {return this.event.name; }
 
-    /** Make it so it's not callable from the outside
-     * so we don't have to worry about lost callbacks and binds */
-    private get onUpdate() {return this._onUpdate;}
+    /** a callback that should be ran on every state update */
+    public get onUpdate() {return this._onUpdate;}
 
     /**
      * hook() is an alias to `socket.on()` or `socket.once()` depending on the provided `IoEventInfo`
@@ -91,7 +90,7 @@ export class ioEvent {
      *  ioEvent.onUpdate will be called with `newData` if it's truthy
      * @param fn {Function}
      */
-    private set onUpdate(fn: Function) {
+    public set onUpdate(fn: Function) {
         if (typeof fn !== "function") throw Error('ioEvent onUpdate prop needs to be of type Function')
         this._onUpdate = fn;
     }
