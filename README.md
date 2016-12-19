@@ -14,3 +14,16 @@ Each ioEvent is responsible for itself, that's to say that an ioEvent is the one
 
 You can, and are supposed to, `extend` on the `ioEvent` Class - treat this as you would behaviors, because that's all they are.    
 Then, `extends ioEvent` and after, `this.onUpdate = (newData) => {}` to run some function *after* the update has been ran on its `ioEvent.updateData` counterpart.
+
+---
+
+#### Thanks to
+
+- http://stackoverflow.com/questions/34376854/delegation-eventemitter-or-observable-in-angular2/35568924#35568924
+- http://www.syntaxsuccess.com/viewarticle/socket.io-with-rxjs-in-angular-2.0 ^(this is where the need arised from)
+
+###### pet peeves
+
+I decided against using "Observables" as "Subjects" [already are...](http://stackoverflow.com/questions/34376854/delegation-eventemitter-or-observable-in-angular2/35568924#35568924)
+
+> Observable (so we can subscribe() to it) and an Observer (so we can call next() on it to emit a new value).
