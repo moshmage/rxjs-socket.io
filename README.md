@@ -1,5 +1,5 @@
 # RxJs Socket.IO
-<img src="https://gitlab.com/moshmage/rxjs-socket.io/badges/master/build.svg"/> <img src="https://gitlab.com/moshmage/rxjs-socket.io/badges/master/coverage.svg"/>
+<a href="https://gitlab.com/moshmage/rxjs-socket.io/commits/master"><img alt="build status" src="https://gitlab.com/moshmage/rxjs-socket.io/badges/master/build.svg" /></a> <a href="https://gitlab.com/moshmage/rxjs-socket.io/commits/master"><img alt="coverage report" src="https://gitlab.com/moshmage/rxjs-socket.io/badges/master/coverage.svg" /></a>
 
 ## Install, Docs and Future
 Read the [project wiki](https://gitlab.com/moshmage/rxjs-socket.io/wikis/home)
