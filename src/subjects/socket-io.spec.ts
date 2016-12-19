@@ -4,16 +4,17 @@
 import {IO} from './socket-io';
 import {ioEvent} from './io-events';
 import {assign} from "rxjs/util/assign";
-const socketIO = require('socket.io');
+import * as io from 'socket.io';
 
 function setUpTestServer() {
-    return socketIO.listen(1337).on('connection', (socket) => {
+    return io.listen(1337).on('connection', (socket) => {
         socket.on('test-event',(socket)=> {
             socket.emit('test-event', {data: true});
         })
     });
 }
-setUpTestServer();
+
+
 
 describe('IO', () => {
     it ('is instance of itself', () => {
@@ -101,9 +102,10 @@ describe('IO', () => {
 
     describe('Connection', () => {
         let socket = new IO();
+        setUpTestServer();
 
         it('connects', () => {
-            console.log()
+            console.log('testing connects');
             socket.event$.subscribe((newData)=>{
                 console.log('newData', newData);
                 expect(newData).toContain({connected: true})

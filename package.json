@@ -6,7 +6,7 @@
   "typings": "dist/index.d.ts",
   "scripts": {
     "test": "karma start karma.conf.js",
-    "posttest":"rm -rf spec/",
+    "posttest": "rm -rf spec/",
     "prebuild": "npm run test",
     "build": "ntsc"
   },
@@ -25,7 +25,7 @@
     "karma-cli": "^1.0.1",
     "karma-jasmine": "^1.1.0",
     "karma-phantomjs-launcher": "^1.0.2",
-    "karma-typescript": "https://github.com/monounity/karma-typescript",
+    "karma-typescript": "^2.1.5",
     "socket.io": "^1.7.2",
     "typescript": "^2.1.4"
   }
