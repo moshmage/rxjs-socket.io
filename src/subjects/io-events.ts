@@ -29,6 +29,7 @@ export class ioEvent {
         this.event = event;
         this.event.count = event.count || 0;
         this.event.once = event.once || false;
+        this.clientSocket = false;
     }
 
     /**
@@ -61,16 +62,23 @@ export class ioEvent {
 
     /**
      * hook() is an alias to `socket.on()` or `socket.once()` depending on the provided `IoEventInfo`
+     * provide a socket-io client socket so the ioEvent can make the hook. It will use that socket
+     * from there on, unless @this.clientSocket is not the same as the provided one: Then it will re-hook
+     * *without calling unhook*
      * @param clientSocket {Socket}
      */
     public hook(clientSocket) :void {
-        this.clientSocket = clientSocket || this.clientSocket;
+        this.clientSocket = this.clientSocket || clientSocket;
+        if (clientSocket && this.clientSocket !== clientSocket) this.clientSocket = clientSocket;
         if (!this.clientSocket) throw Error('ioEvent has no socket to hook to.');
+
         if (this.event.once) {
             this.event.count = 0;
             this.clientSocket.once(this.event.name, (data) => this.updateData(data));
+            return;
         }
-        else this.clientSocket.on(this.event.name, (data) => this.updateData(data));
+
+        this.clientSocket.on(this.event.name, (data) => this.updateData(data));
 
         /** This is where magic happens. The callback for every ioEvent is a `SubjectBehavior.next()` call
          * so we can safely `.subscribe()` to the public `event$` prop that each ioEvent has */

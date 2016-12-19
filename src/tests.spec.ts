@@ -1,8 +1,8 @@
 /**
  * Created by Mosh Mage on 12/17/2016.
  */
-import {IO} from './socket-io';
-import {ioEvent} from './io-events';
+import {IO} from './subjects/socket-io';
+import {ioEvent} from './subjects/io-events';
 import {assign} from "rxjs/util/assign";
 
 describe('IO', () => {
@@ -112,5 +112,74 @@ describe('IO', () => {
 });
 
 describe('ioEvent', () => {
-    
-})
+    let socket = new IO();
+    let eventCount = 0;
+    let event;
+    describe('hook and unhook', () => {
+        beforeEach(() => {
+            event = new ioEvent({name: 'test-event', once: false, count: 0});
+            assign(event, {clientSocket: {once() {}, on() {}, off() {} }})
+        });
+
+        it('hooks, once', () => {
+            event.event.once = true;
+            spyOn(event.clientSocket, 'once').and.callThrough();
+            event.hook(event.clientSocket);
+            expect(event.clientSocket.once.calls.count()).toBe(1);
+        });
+
+        it('hooks using on', () => {
+            spyOn(event.clientSocket, 'on').and.callThrough();
+            event.hook(event.clientSocket);
+            expect(event.clientSocket.on.calls.count()).toBe(1);
+        });
+
+        it('hooks using on with a new socket', () => {
+            let newClientSocket = {clientSocket: {once() {}, on() {}, off() {}, id: 1}};
+            spyOn(newClientSocket.clientSocket, 'on').and.callThrough();
+            spyOn(event.clientSocket, 'on').and.callThrough();
+
+            event.hook(event.clientSocket);
+            event.hook(newClientSocket.clientSocket);
+
+            expect(event.clientSocket.on.calls.count()).toBe(1);
+            expect(newClientSocket.clientSocket.on.calls.count()).toBe(1);
+        });
+
+        it('does not unhook because once', () => {
+            event.event.once = true;
+            spyOn(event.clientSocket, 'off').and.callThrough();
+            event.unhook();
+            expect(event.clientSocket.off.calls.count()).toBe(0);
+        });
+
+        it('does unhook', () => {
+            spyOn(event.clientSocket, 'off').and.callThrough();
+            event.unhook();
+            expect(event.clientSocket.off.calls.count()).toBe(1);
+        });
+
+        it('sets a callback function', () => {
+            /** check the "throw" further down for its counter */
+            let noop = () => {};
+            event.onUpdate = noop;
+            expect(event.onUpdate).toBe(noop);
+        })
+    });
+
+    describe('throws', () => {
+        it('Should throw because a socketClient wasnt provided', () => {
+            event = new ioEvent({name: 'test-event', once: false, count: 0});
+            expect(function () {
+                return event.hook()
+            }).toThrowError(/no socket/i);
+        });
+
+        it ('should throw because provided is not a function', () => {
+            event = new ioEvent({name: 'test-event', once: false, count: 0});
+            expect(function () {
+                return event.onUpdate = '';
+            }).toThrowError(/type Function/i);
+        });
+    })
+});
