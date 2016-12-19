@@ -4,24 +4,12 @@
 import {IO} from './socket-io';
 import {ioEvent} from './io-events';
 import {assign} from "rxjs/util/assign";
-import * as io from 'socket.io';
-
-function setUpTestServer() {
-    return io.listen(1337).on('connection', (socket) => {
-        socket.on('test-event',(socket)=> {
-            socket.emit('test-event', {data: true});
-        })
-    });
-}
-
-
 
 describe('IO', () => {
     it ('is instance of itself', () => {
         let socket = new IO();
         expect(socket instanceof IO).toBe(true);
     });
-
     describe('listenEvent & eventExists', () => {
         let socket = new IO();
         let eventCount = 0;
@@ -50,7 +38,6 @@ describe('IO', () => {
         });
 
     });
-    
     describe('Public coverage', () => {
 
         it("raw", () => {
@@ -100,7 +87,16 @@ describe('IO', () => {
         });
     });
 
-    describe('Connection', () => {
+    xdescribe('Connection', () => {
+
+        // function setUpTestServer() {
+        //     return require('socket.io').listen(1337).on('connection', (socket) => {
+        //         socket.on('test-event',(socket)=> {
+        //             socket.emit('test-event', {data: true});
+        //         })
+        //     });
+        // }
+
         let socket = new IO();
         setUpTestServer();
 
@@ -114,3 +110,7 @@ describe('IO', () => {
         });
     })
 });
+
+describe('ioEvent', () => {
+    
+})

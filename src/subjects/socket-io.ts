@@ -7,7 +7,7 @@ const SOCKET_URL = "http://localhost:5000";
 
 export class IO {
     /** this will be set as a reference to io.Socket */
-    public socket: any;
+    private socket: any;
 
     /** events will be used to push which events we should be listening to */
     private events: ioEvent[] = [];
