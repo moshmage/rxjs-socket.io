@@ -1,6 +1,6 @@
 import {ioEvent} from "./io-events";
 import {SocketState, initialState} from "./../interfaces/socket-io";
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {ReplaySubject} from 'rxjs/ReplaySubject';
 import * as io from 'socket.io-client';
 
 const SOCKET_URL = "http://localhost:5000";
@@ -12,7 +12,7 @@ export class IO {
     /** events will be used to push which events we should be listening to */
     private events: ioEvent[] = [];
 
-    private _socketState: BehaviorSubject<SocketState> = new BehaviorSubject<SocketState>(initialState);
+    private _socketState: ReplaySubject<SocketState> = new ReplaySubject<SocketState>(1);
 
     /**
      * The Subscribable (Observable) prop
@@ -29,9 +29,6 @@ export class IO {
     
     /** a reference to the raw socket returned from io(), if connected */
     public get raw() { return this.connected && this.socket }
-    
-    /** a reference to the subscription .getValue() */
-    public get socketState() {return this._socketState.getValue(); }
 
     /** an alias for Socket.emit() */
     public emit(eventName: string, data: Object) {
@@ -44,14 +41,17 @@ export class IO {
      * EVEN if it's a `once` event, as one change will trigger all listeners */
     public eventExists(ioEvent :ioEvent) :boolean {
         return this.events.some(_ioEvent => {
-            return !_ioEvent.hasTriggered && _ioEvent.isUnique && _ioEvent.name === ioEvent.name ||
-                !_ioEvent.isUnique && _ioEvent.name === ioEvent.name;
+            if (!_ioEvent.hasTriggered && !ioEvent.hasTriggered && ioEvent.isUnique &&
+                _ioEvent.name === ioEvent.name) return false;
+
+            return !_ioEvent.isUnique && _ioEvent.name === ioEvent.name;
         });
     }
 
     /** pushes an ioEvent to be heard */
-    public listenToEvent(ioEvent: ioEvent) :void {
-        if (!this.eventExists(ioEvent)) this.events.push(ioEvent);
+    public listenToEvent(ioEvent: ioEvent) :number {
+        if (!this.eventExists(ioEvent)) return this.events.push(ioEvent);
+        return this.events.length;
     }
 
     /**
@@ -69,7 +69,7 @@ export class IO {
         this.socket.on('connect', () => {
             this.connected = true;
 
-            this._socketState.next({connected: true, id: this.socket.id || 1 });
+            this._socketState.next({connected: true, id: this.socket.id || 0 });
             this.events.forEach(ioEvent => {
                 /** this is where we hook our previously new()ed ioEvents to the socket.
                  * This is so we can have one listener per event. as opposed to one event
@@ -96,13 +96,11 @@ export class IO {
      * @param value
      */
     public set connected(value: boolean) {
-        if (value === false && this.connected) {
+        if (value === false && this._connected) {
             this.socket.disconnect();
-            this._socketState.next({connected: false});
         }
         this._connected = value;
+        this._socketState.next({connected: value});
     };
-
-    /** make sure no one messes with our stateProp */
-    public set socketState(v) {return;}
+    
 }

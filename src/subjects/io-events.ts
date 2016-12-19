@@ -1,13 +1,16 @@
 import {IoEventInfo, initialEvent, ReceivedEvent} from "./../interfaces/socket-io";
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 export class ioEvent {
     /** this is the reference for a io() value */
     private clientSocket: any;
 
     /** the actual Rx Subject */
-    private _lastEvent: BehaviorSubject<ReceivedEvent> = new BehaviorSubject<ReceivedEvent>(initialEvent);
+    private _lastEvent: ReplaySubject<ReceivedEvent> = new ReplaySubject<ReceivedEvent>(1);
 
+    /** a reference to the last received event */
+    public lastEvent: ReceivedEvent = initialEvent;
+    
     /**
      * This function is called at every value update so extenders of ioEvent can have their own
      * logic after a new update. This should be used to update services, etc.. etc.. - please:
@@ -18,11 +21,15 @@ export class ioEvent {
         this._lastEvent.next(newData);
         this.event.count++; /** we will be using "count" has a way of knowing if it has been triggered. */
         if (this._onUpdate) this._onUpdate(newData); /** a way for us to extend properly */
+        this.lastEvent = newData;
     }
     private _onUpdate: Function;
     
     constructor(public event: IoEventInfo) {
         this.event = event;
+        this.event.count = event.count || 0;
+        this.event.once = event.once || false;
+        this.clientSocket = false;
     }
 
     /**
@@ -50,22 +57,28 @@ export class ioEvent {
      */
     public get name() {return this.event.name; }
 
-    /** Make it so it's not callable from the outside
-     * so we don't have to worry about lost callbacks and binds */
-    private get onUpdate() {return this._onUpdate;}
+    /** a callback that should be ran on every state update */
+    public get onUpdate() {return this._onUpdate;}
 
     /**
      * hook() is an alias to `socket.on()` or `socket.once()` depending on the provided `IoEventInfo`
+     * provide a socket-io client socket so the ioEvent can make the hook. It will use that socket
+     * from there on, unless @this.clientSocket is not the same as the provided one: Then it will re-hook
+     * *without calling unhook*
      * @param clientSocket {Socket}
      */
     public hook(clientSocket) :void {
-        this.clientSocket = clientSocket || this.clientSocket;
+        this.clientSocket = this.clientSocket || clientSocket;
+        if (clientSocket && this.clientSocket !== clientSocket) this.clientSocket = clientSocket;
         if (!this.clientSocket) throw Error('ioEvent has no socket to hook to.');
+
         if (this.event.once) {
             this.event.count = 0;
             this.clientSocket.once(this.event.name, (data) => this.updateData(data));
+            return;
         }
-        else this.clientSocket.on(this.event.name, (data) => this.updateData(data));
+
+        this.clientSocket.on(this.event.name, (data) => this.updateData(data));
 
         /** This is where magic happens. The callback for every ioEvent is a `SubjectBehavior.next()` call
          * so we can safely `.subscribe()` to the public `event$` prop that each ioEvent has */
@@ -79,19 +92,13 @@ export class ioEvent {
     }
 
     /**
-     * a reference to the subscription .getValue()
-     * @returns {ReceivedEvent}
-     */
-    public get lastEvent() {return this._lastEvent.getValue(); }
-
-    /**
      * This function acts as a prive to make actions when your extended ioEvent
      * gets new data. if the ioEvent is of type unique you can then use .hook()
      * so re-hook the event as a .once() again.
      *  ioEvent.onUpdate will be called with `newData` if it's truthy
      * @param fn {Function}
      */
-    private set onUpdate(fn: Function) {
+    public set onUpdate(fn: Function) {
         if (typeof fn !== "function") throw Error('ioEvent onUpdate prop needs to be of type Function')
         this._onUpdate = fn;
     }

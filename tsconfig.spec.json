@@ -6,7 +6,9 @@
     "removeComments": true,
     "outDir": "spec/",
     "declaration": false,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "listFiles": true,
+    "baseUrl": "./"
   },
   "include": [
     "src/**/*"
