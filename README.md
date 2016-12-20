@@ -10,7 +10,7 @@ whole application is not on a `message` event. That'd be wack.
 
 ### How
 rxjs-socket.io exposes two classes, `IO` (which can be used as a provider @ Angular2) and `ioEvent`. IO Class is responsible to listen to `ioEvent`s.    
-IO then creates a `ReplaySubject` which will make a `EventListener` reference to socket.io which will fire the corresponding `ReplaySubject` that's exposed by `ioEvent` as well.
+IO then creates a `ReplaySubject` which will make a `EventListener` reference to socket.io, which will fire the corresponding `ReplaySubject` that's exposed by `ioEvent` as well.
 
 All you need to do is create `ioEvent`s and tell `IO` to `listenToEvent(ioEvent)`, followed by a RxJs Subscription to the exposed `event$` prop.    
 There's a heavily documented @angular2 [exmaple on the wiki](heavy-commented-@angular-example)
