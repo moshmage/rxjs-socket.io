@@ -9,11 +9,11 @@ Main objective was to have a "more than one event" subscription so I could liste
 whole application is not on a `message` event. That'd be wack.
 
 ### How
-To do this, I applied RxJs Subject Behavior on a SocketIO wrapper Class that's fed an array of instaces of `ioEvents`;    
-Each ioEvent is responsible for itself, that's to say that an ioEvent is the one that issues a `.next()` update on the `Subject`.
+rxjs-socket.io exposes two classes, `IO` (which can be used as a provider @ Angular2) and `ioEvent`. IO Class is responsible to listen to `ioEvent`s.    
+IO then creates a `ReplaySubject` which will make a `EventListener` reference to socket.io which will fire the corresponding `ReplaySubject` that's exposed by `ioEvent` as well.
 
-You can, and are supposed to, `extend` on the `ioEvent` Class - treat this as you would behaviors, because that's all they are.    
-Then, `extends ioEvent` and after, `this.onUpdate = (newData) => {}` to run some function *after* the update has been ran on its `ioEvent.updateData` counterpart.
+All you need to do is create `ioEvent`s and tell `IO` to `listenToEvent(ioEvent)`, followed by a RxJs Subscription to the exposed `event$` prop.    
+There's a heavily documented @angular2 [exmaple on the wiki](heavy-commented-@angular-example)
 
 ---
 
