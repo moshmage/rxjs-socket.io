@@ -13,7 +13,7 @@ rxjs-socket.io exposes two classes, `IO` (which can be used as a provider @ Angu
 IO then creates a `ReplaySubject` which will make a `EventListener` reference to socket.io, which will fire the corresponding `ReplaySubject` that's exposed by `ioEvent` as well.
 
 All you need to do is create `ioEvent`s and tell `IO` to `listenToEvent(ioEvent)`, followed by a RxJs Subscription to the exposed `event$` prop.    
-There's a heavily documented @angular2 [exmaple on the wiki](heavy-commented-@angular-example)
+There's a heavily documented @angular2 [exmaple on the wiki](https://gitlab.com/moshmage/rxjs-socket.io/wikis/heavy-commented-@angular-example)
 
 ---
 
