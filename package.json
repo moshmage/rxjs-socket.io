@@ -34,7 +34,6 @@
     "url": "https://gitlab.com/moshmage/rxjs-socket.io/issues"
   },
   "repository": {
-    "type": "git",
-    "url": "git+git@gitlab.com:moshmage/rxjs-socket.io.git"
+    "url": "https://gitlab.com/moshmage/rxjs-socket.io/"
   }
 }
