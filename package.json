@@ -28,6 +28,6 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-typescript": "^2.1.5",
     "socket.io": "^1.7.2",
-    "typescript": "^2.1.4"
+    "ntypescript": "^1.201609302242.1"
   }
 }
