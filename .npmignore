@@ -1,4 +1,9 @@
-**/*
-!dist/*
-!package.json
-!README.md
+.idea/*
+node_modules/*
+src/*
+example/*
+spec/*
+coverage/*
+karma.conf.js
+tsconfig*
+typings*
