@@ -9,7 +9,7 @@
     "test": "karma start karma.conf.js --single-run",
     "posttest": "rm -rf spec/",
     "prebuild": "npm run test",
-    "build": "ntsc"
+    "build": "tsc"
   },
   "author": "moshmage@gmail.com",
   "license": "ISC",
@@ -28,7 +28,7 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-typescript": "^2.1.5",
     "socket.io": "^1.7.2",
-    "ntypescript": "^1.201609302242.1"
+    "typescript": "@latest"
   },
   "bugs": {
     "url": "https://gitlab.com/moshmage/rxjs-socket.io/issues"
