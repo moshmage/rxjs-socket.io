@@ -1,7 +1,7 @@
 {
   "name": "rxjs-socket.io",
-  "version": "0.5.0",
-  "description": "wraps socket.io-client into behavior subjects called ioEvents",
+  "version": "0.0.0",
+  "description": "wraps socket.io-client into replay subjects called ioEvents",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
@@ -29,5 +29,12 @@
     "karma-typescript": "^2.1.5",
     "socket.io": "^1.7.2",
     "ntypescript": "^1.201609302242.1"
+  },
+  "bugs": {
+	"url" : "https://gitlab.com/moshmage/rxjs-socket.io/issues"
+  },
+    "repository": {
+    "type": "git",
+    "url": "git+git@gitlab.com:moshmage/rxjs-socket.io.git"
   }
 }
