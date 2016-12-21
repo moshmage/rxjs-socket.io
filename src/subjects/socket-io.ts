@@ -25,6 +25,22 @@ export class IO {
      * it also controls whether or not we should issue this.socket.disconnect() */
     private _connected: boolean = false;
 
+    /**
+     * returns an event by matching ioEvent.name against the provided argument string
+     * @param name {string}
+     * @returns {ioEvent | boolean}
+     */
+    private getEvent(name: string) {
+        let foundEvent;
+        this.events.some(ioEvent => {
+            if (name === ioEvent.name) {
+                foundEvent = ioEvent;
+                return true;
+            }
+        });
+
+        return foundEvent;
+    }
     constructor() {}
     
     /** a reference to the raw socket returned from io(), if connected */
@@ -49,9 +65,10 @@ export class IO {
     }
 
     /** pushes an ioEvent to be heard */
-    public listenToEvent(ioEvent: ioEvent) :number {
-        if (!this.eventExists(ioEvent)) return this.events.push(ioEvent);
-        return this.events.length;
+    public listenToEvent(ioEvent: ioEvent) :ioEvent {
+        if (!this.eventExists(ioEvent)) this.events.push(ioEvent);
+        else ioEvent = this.getEvent(ioEvent.name);
+        return ioEvent;
     }
 
     /**
