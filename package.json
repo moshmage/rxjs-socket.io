@@ -1,6 +1,6 @@
 {
   "name": "rxjs-socket.io",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "wraps socket.io-client into replay subjects called ioEvents",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
