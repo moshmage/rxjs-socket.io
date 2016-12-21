@@ -25,13 +25,29 @@ export class IO {
      * it also controls whether or not we should issue this.socket.disconnect() */
     private _connected: boolean = false;
 
+    /**
+     * returns an event by matching ioEvent.name against the provided argument string
+     * @param name {string}
+     * @returns {ioEvent | boolean}
+     */
+    private getEvent(name: string, isUnique?: boolean) {
+        let foundEvent;
+        this.events.some(ioEvent => {
+            if (isUnique === ioEvent.isUnique && name === ioEvent.name) {
+                foundEvent = ioEvent;
+                return true;
+            }
+        });
+
+        return foundEvent;
+    }
     constructor() {}
     
     /** a reference to the raw socket returned from io(), if connected */
     public get raw() { return this.connected && this.socket }
 
     /** an alias for Socket.emit() */
-    public emit(eventName: string, data: Object) {
+    public emit(eventName: string, data?: Object) {
         if (this.connected) {
             this.socket.emit(eventName, data);
         }
@@ -48,10 +64,16 @@ export class IO {
         });
     }
 
-    /** pushes an ioEvent to be heard */
-    public listenToEvent(ioEvent: ioEvent) :number {
-        if (!this.eventExists(ioEvent)) return this.events.push(ioEvent);
-        return this.events.length;
+    /**
+     * pushes an ioEvent to be heard and returns the event,
+     * or the existing event - if that's true
+     * @param ioEvent
+     * @returns {ioEvent}
+     */
+    public listenToEvent(ioEvent: ioEvent) :ioEvent {
+        if (!this.eventExists(ioEvent)) this.events.push(ioEvent);
+        else ioEvent = this.getEvent(ioEvent.name, ioEvent.isUnique);
+        return ioEvent;
     }
 
     /**

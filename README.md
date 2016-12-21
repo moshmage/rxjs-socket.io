@@ -1,29 +1,32 @@
-# RxJs Socket.IO
-<a href="https://gitlab.com/moshmage/rxjs-socket.io/commits/master"><img alt="build status" src="https://gitlab.com/moshmage/rxjs-socket.io/badges/master/build.svg" /></a> <a href="https://gitlab.com/moshmage/rxjs-socket.io/commits/master"><img alt="coverage report" src="https://gitlab.com/moshmage/rxjs-socket.io/badges/master/coverage.svg" /></a>
+#RxJs Socket.IO
+install with `npm install --save rxjs-socket.io`
 
-## Install, Docs and Future
-Read the [project wiki](https://gitlab.com/moshmage/rxjs-socket.io/wikis/home)
+# Usage
+```typescript
+import {IO, ioEvent} from 'rxjs-socket.io'
 
-### Why
-Main objective was to have a "more than one event" subscription so I could listen to more than one event, as my
-whole application is not on a `message` event. That'd be wack.
+const socket = new IO();
+const onHelloWorld = new ioEvent({name: "hello-world", once: false, count: 0});
 
-### How
-rxjs-socket.io exposes two classes, `IO` (which can be used as a provider @ Angular2) and `ioEvent`. IO Class is responsible to listen to `ioEvent`s.    
-IO then creates a `ReplaySubject` which will make a `EventListener` reference to socket.io, which will fire the corresponding `ReplaySubject` that's exposed by `ioEvent` as well.
+onHelloWorld = socket.listenToEvent(onHelloWorld);
+socket.connect('http://localhost:1337');
 
-All you need to do is create `ioEvent`s and tell `IO` to `listenToEvent(ioEvent)`, followed by a RxJs Subscription to the exposed `event$` prop.    
-There's a heavily documented @angular2 [exmaple on the wiki](https://gitlab.com/moshmage/rxjs-socket.io/wikis/heavy-commented-@angular-example)
+onHelloWorld.event$.subscribe((state) => {
+    console.log('new state', state);
+});
+```
 
----
+# Documentation
+For now, [check the *.d.ts](rxjs-socket.io.d.ts) of the files, as the source is heavily commented;
+When I get a typescript docs generator to run properly without barfing errors about typings, I'll make a proper gl-page. You can help with that if you want to :)
 
-#### Thanks to
+## Examples
+For examples, check the [example repo](https://gitlab.com/moshmage/rxjs-sioc-eample)
 
-- http://stackoverflow.com/questions/34376854/delegation-eventemitter-or-observable-in-angular2/35568924#35568924
-- http://www.syntaxsuccess.com/viewarticle/socket.io-with-rxjs-in-angular-2.0 ^(this is where the need arised from)
-
-###### pet peeves
-
-I decided against using "Observables" as "Subjects" [already are...](http://stackoverflow.com/questions/34376854/delegation-eventemitter-or-observable-in-angular2/35568924#35568924)
-
-> Observable (so we can subscribe() to it) and an Observer (so we can call next() on it to emit a new value).
+#### Todo
+- ~~Unit testing~~
+- ~~Example~~
+- ~~Docs~~
+- Proper Documentation
+- Can I get a code review? That'd be neat.
+- ~~Publish~~
