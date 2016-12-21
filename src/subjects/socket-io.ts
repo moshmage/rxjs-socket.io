@@ -31,7 +31,7 @@ export class IO {
     public get raw() { return this.connected && this.socket }
 
     /** an alias for Socket.emit() */
-    public emit(eventName: string, data: Object) {
+    public emit(eventName: string, data?: Object) {
         if (this.connected) {
             this.socket.emit(eventName, data);
         }
