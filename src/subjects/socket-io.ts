@@ -64,7 +64,12 @@ export class IO {
         });
     }
 
-    /** pushes an ioEvent to be heard */
+    /**
+     * pushes an ioEvent to be heard and returns the event,
+     * or the existing event - if that's true
+     * @param ioEvent
+     * @returns {ioEvent}
+     */
     public listenToEvent(ioEvent: ioEvent) :ioEvent {
         if (!this.eventExists(ioEvent)) this.events.push(ioEvent);
         else ioEvent = this.getEvent(ioEvent.name, ioEvent.isUnique);
