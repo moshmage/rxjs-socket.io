@@ -8,7 +8,7 @@ import {IO, ioEvent} from 'rxjs-socket.io'
 const socket = new IO();
 const onHelloWorld = new ioEvent({name: "hello-world", once: false, count: 0});
 
-socket.listenToEvent(onHelloWorld);
+onHelloWorld = socket.listenToEvent(onHelloWorld);
 socket.connect('http://localhost:1337');
 
 onHelloWorld.event$.subscribe((state) => {
