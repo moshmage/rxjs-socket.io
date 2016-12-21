@@ -19,22 +19,21 @@ describe('IO', () => {
             expect(socket.eventExists(event)).toBeFalsy();
         });
 
-        it('it exists after being added', () => {
-            eventCount = socket.listenToEvent(event);
-            expect(socket.eventExists(event)).toBeTruthy();
-            expect(eventCount).toBe(1);
+        it('it returns the same event, because it already exists', () => {
+            let sameEvent = socket.listenToEvent(event);
+            expect(event).toEqual(sameEvent);
         });
 
         it('listens because its unique', () => {
             let uniqueEvent = new ioEvent({name: 'test-event', once: true, count: 0});
-            eventCount = socket.listenToEvent(uniqueEvent);
-            expect(eventCount).toBe(2);
+            let actuallyTheUnique = socket.listenToEvent(uniqueEvent);
+            expect(uniqueEvent).toBe(actuallyTheUnique);
         });
 
         it('cant listen to a triggered unique', () => {
             let uniqueEvent = new ioEvent({name: 'test-event', once: true, count: 1});
-            eventCount = socket.listenToEvent(uniqueEvent);
-            expect(eventCount).toBe(2);
+            let notTheSameUnique = socket.listenToEvent(uniqueEvent);
+            expect(uniqueEvent).not.toEqual(notTheSameUnique);
         });
 
     });

@@ -30,10 +30,10 @@ export class IO {
      * @param name {string}
      * @returns {ioEvent | boolean}
      */
-    private getEvent(name: string) {
+    private getEvent(name: string, isUnique?: boolean) {
         let foundEvent;
         this.events.some(ioEvent => {
-            if (name === ioEvent.name) {
+            if (isUnique === ioEvent.isUnique && name === ioEvent.name) {
                 foundEvent = ioEvent;
                 return true;
             }
@@ -67,7 +67,7 @@ export class IO {
     /** pushes an ioEvent to be heard */
     public listenToEvent(ioEvent: ioEvent) :ioEvent {
         if (!this.eventExists(ioEvent)) this.events.push(ioEvent);
-        else ioEvent = this.getEvent(ioEvent.name);
+        else ioEvent = this.getEvent(ioEvent.name, ioEvent.isUnique);
         return ioEvent;
     }
 
