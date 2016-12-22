@@ -1,5 +1,5 @@
 import {ioEvent} from "./io-events";
-import {SocketState, initialState} from "./../interfaces/socket-io";
+import {SocketState} from "./../interfaces/socket-io";
 import {ReplaySubject} from 'rxjs/ReplaySubject';
 import * as io from 'socket.io-client';
 

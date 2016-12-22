@@ -1,4 +1,4 @@
-import {IoEventInfo, initialEvent, ReceivedEvent} from "./../interfaces/socket-io";
+import {IoEventInfo} from "./../interfaces/socket-io";
 import {ReplaySubject} from 'rxjs/ReplaySubject';
 
 export class ioEvent {
@@ -6,15 +6,15 @@ export class ioEvent {
     private clientSocket: any;
 
     /** the actual Rx Subject */
-    private _lastEvent: ReplaySubject<ReceivedEvent> = new ReplaySubject<ReceivedEvent>(1);
+    private _lastEvent: ReplaySubject<Object> = new ReplaySubject<Object>(1);
+    private _initialState: any = false;
 
     /** a reference to the last received event */
-    public lastEvent: ReceivedEvent = initialEvent;
+    public lastEvent: Object = {};
     
     /**
-     * This function is called at every value update so extenders of ioEvent can have their own
-     * logic after a new update. This should be used to update services, etc.. etc.. - please:
-     * don't use this function as a callback hell. use it as a clutch.
+     * Responsible for eventCounting and updating data on the ReplaySubject
+     * if _onUpdate exists, it will be called with newData as argument
      * @param newData
      */
     private updateData(newData) {
@@ -25,7 +25,7 @@ export class ioEvent {
     }
     private _onUpdate: Function;
 
-    public event: IoEventInfo;
+    public event: IoEventInfo = {name: '', count: 0, once: false};
     constructor(name: string, isUnique?:boolean, count?:number) {
         this.event.name = name;
         this.event.count = count || 0;
@@ -104,8 +104,22 @@ export class ioEvent {
         this._onUpdate = fn;
     }
 
+    public get initialState():any {return this._initialState;}
+
+    /**
+     * Use this to set an initialState to be reset to when connection closes
+     * otherwise, false will be the updating value.
+     * @param state {any}
+     */
+    public set initialState(state: any) {
+        this._initialState = state;
+    }
+
+    /**
+     * updates data with FALSE
+     */
     public resetState() {
-        this.updateData(initialEvent);
+        this.updateData(this._initialState);
     }
 }
 
