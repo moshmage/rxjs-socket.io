@@ -24,11 +24,12 @@ export class ioEvent {
         this.lastEvent = newData;
     }
     private _onUpdate: Function;
-    
-    constructor(public event: IoEventInfo) {
-        this.event = event;
-        this.event.count = event.count || 0;
-        this.event.once = event.once || false;
+
+    public event: IoEventInfo;
+    constructor(name: string, isUnique?:boolean, count?:number) {
+        this.event.name = name;
+        this.event.count = count || 0;
+        this.event.once = isUnique || false;
         this.clientSocket = false;
     }
 
@@ -101,6 +102,10 @@ export class ioEvent {
     public set onUpdate(fn: Function) {
         if (typeof fn !== "function") throw Error('ioEvent onUpdate prop needs to be of type Function')
         this._onUpdate = fn;
+    }
+
+    public resetState() {
+        this.updateData(initialEvent);
     }
 }
 

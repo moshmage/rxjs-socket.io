@@ -105,6 +105,8 @@ export class IO {
 
             this.socket.on('disconnect', () => {
                 this.connected = false;
+                /** call reset state on disconnection */
+                this.events.forEach(ioEvent => ioEvent.resetState());
             })
         });
     };
