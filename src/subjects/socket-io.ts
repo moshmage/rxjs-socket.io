@@ -71,16 +71,19 @@ export class IO {
      * @returns {ioEvent}
      */
     public listenToEvent(ioEvent: ioEvent) :ioEvent {
-        if (!this.eventExists(ioEvent)) this.events.push(ioEvent);
+        if (!this.eventExists(ioEvent)) {
+            this.events.push(ioEvent);
+            if (this.connected) ioEvent.hook(this.socket)
+        }
         else ioEvent = this.getEvent(ioEvent.name, ioEvent.isUnique);
         return ioEvent;
     }
 
     /**
      * Makes a new connection to the @SOCKET_URL const and sets up a `on connect` by default
-     * which will in turn update the @this._socketState Subject with the GameEvent containing
+     * which will in turn update the @this._socketState Subject with the containing
      * the received data as an argument (as well as the event-name)
-     * @param nickname {String}     used on first connect emit
+     * @param address {String}     defaults to "http://localhost:5000"
      * @param forceNew {Boolean}
      */
     public connect(address?: string, forceNew?:boolean) :void {
