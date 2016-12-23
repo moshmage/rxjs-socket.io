@@ -1,20 +1,22 @@
-import {IoEventInfo, initialEvent, ReceivedEvent} from "./../interfaces/socket-io";
+import {IoEventInfo} from "./../interfaces/socket-io";
 import {ReplaySubject} from 'rxjs/ReplaySubject';
+import {isObject} from "rxjs/util/isObject";
+import {assign} from "rxjs/util/assign";
 
 export class ioEvent {
     /** this is the reference for a io() value */
     private clientSocket: any;
 
     /** the actual Rx Subject */
-    private _lastEvent: ReplaySubject<ReceivedEvent> = new ReplaySubject<ReceivedEvent>(1);
+    private _lastEvent: ReplaySubject<Object> = new ReplaySubject<Object>(1);
+    private _initialState: any = false;
 
     /** a reference to the last received event */
-    public lastEvent: ReceivedEvent = initialEvent;
+    public lastEvent: Object = {};
     
     /**
-     * This function is called at every value update so extenders of ioEvent can have their own
-     * logic after a new update. This should be used to update services, etc.. etc.. - please:
-     * don't use this function as a callback hell. use it as a clutch.
+     * Responsible for eventCounting and updating data on the ReplaySubject
+     * if _onUpdate exists, it will be called with newData as argument
      * @param newData
      */
     private updateData(newData) {
@@ -24,11 +26,12 @@ export class ioEvent {
         this.lastEvent = newData;
     }
     private _onUpdate: Function;
-    
-    constructor(public event: IoEventInfo) {
-        this.event = event;
-        this.event.count = event.count || 0;
-        this.event.once = event.once || false;
+
+    public event: IoEventInfo = {name: '', count: 0, once: false};
+    constructor(name: string, isUnique?:boolean, count?:number) {
+        this.event.name = name;
+        this.event.count = count || 0;
+        this.event.once = isUnique || false;
         this.clientSocket = false;
     }
 
@@ -101,6 +104,26 @@ export class ioEvent {
     public set onUpdate(fn: Function) {
         if (typeof fn !== "function") throw Error('ioEvent onUpdate prop needs to be of type Function')
         this._onUpdate = fn;
+    }
+
+    public get initialState():any {return this._initialState;}
+
+    /**
+     * Use this to set an initialState to be reset to when connection closes
+     * otherwise, false will be the updating value.
+     * @param state {any}
+     */
+    public set initialState(state: any) {
+        if (!this._initialState) this._initialState = state;
+        else if (isObject(this._initialState)) this._initialState = assign(this._initialState,state);
+        else this._initialState = state;
+    }
+
+    /**
+     * updates data with FALSE
+     */
+    public resetState() {
+        this.updateData(this._initialState);
     }
 }
 

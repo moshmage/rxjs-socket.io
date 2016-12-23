@@ -13,7 +13,7 @@ describe('IO', () => {
     describe('listenEvent & eventExists', () => {
         let socket = new IO();
         let eventCount = 0;
-        let event = new ioEvent({name: 'test-event', once: false, count: 0});
+        let event = new ioEvent('test-event');
 
         it('event does not exist', () => {
             expect(socket.eventExists(event)).toBeFalsy();
@@ -25,13 +25,13 @@ describe('IO', () => {
         });
 
         it('listens because its unique', () => {
-            let uniqueEvent = new ioEvent({name: 'test-event', once: true, count: 0});
+            let uniqueEvent = new ioEvent('test-event', true);
             let actuallyTheUnique = socket.listenToEvent(uniqueEvent);
             expect(uniqueEvent).toBe(actuallyTheUnique);
         });
 
         it('cant listen to a triggered unique', () => {
-            let uniqueEvent = new ioEvent({name: 'test-event', once: true, count: 1});
+            let uniqueEvent = new ioEvent('test-event',true, 1);
             let notTheSameUnique = socket.listenToEvent(uniqueEvent);
             expect(uniqueEvent).not.toEqual(notTheSameUnique);
         });
@@ -114,9 +114,9 @@ describe('ioEvent', () => {
     let socket = new IO();
     let eventCount = 0;
     let event;
-    describe('hook and unhook', () => {
+    describe('Public coverage', () => {
         beforeEach(() => {
-            event = new ioEvent({name: 'test-event', once: false, count: 0});
+            event = new ioEvent('test-event');
             assign(event, {clientSocket: {once() {}, on() {}, off() {} }})
         });
 
@@ -163,19 +163,43 @@ describe('ioEvent', () => {
             let noop = () => {};
             event.onUpdate = noop;
             expect(event.onUpdate).toBe(noop);
+        });
+
+        describe('initialState', () => {
+            it ('is false', () => {
+                expect(event.initialState).toBe(false);
+            });
+            
+            it('is assignable and object', () => {
+                event.initialState = {hello: 'world'};
+                event.initialState = {world: 'hello'};
+                expect(event.initialState).toEqual({hello: 'world', world: 'hello'});
+            });
+            
+            it('is assignable and not a object, so rewritten', () => {
+                event.initialState = 'hello';
+                expect(event.initialState).toEqual('hello');
+            });
+            
+            it('resets state (and cover onUpdateData on the way)', () => {
+                let noop = () => {};
+                event.onUpdate = noop;
+                event.resetState();
+                expect(event.initialState).toBe(false);
+            })
         })
     });
 
     describe('throws', () => {
         it('Should throw because a socketClient wasnt provided', () => {
-            event = new ioEvent({name: 'test-event', once: false, count: 0});
+            event = new ioEvent('test-event');
             expect(function () {
                 return event.hook()
             }).toThrowError(/no socket/i);
         });
 
         it ('should throw because provided is not a function', () => {
-            event = new ioEvent({name: 'test-event', once: false, count: 0});
+            event = new ioEvent('test-event', false, 0);
             expect(function () {
                 return event.onUpdate = '';
             }).toThrowError(/type Function/i);
