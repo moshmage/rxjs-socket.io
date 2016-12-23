@@ -1,5 +1,7 @@
 import {IoEventInfo} from "./../interfaces/socket-io";
 import {ReplaySubject} from 'rxjs/ReplaySubject';
+import {isObject} from "rxjs/util/isObject";
+import {assign} from "rxjs/util/assign";
 
 export class ioEvent {
     /** this is the reference for a io() value */
@@ -112,7 +114,9 @@ export class ioEvent {
      * @param state {any}
      */
     public set initialState(state: any) {
-        this._initialState = state;
+        if (!this._initialState) this._initialState = state;
+        else if (isObject(this._initialState)) this._initialState = assign(this._initialState,state);
+        else this._initialState = state;
     }
 
     /**
