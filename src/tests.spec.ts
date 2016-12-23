@@ -185,7 +185,7 @@ describe('ioEvent', () => {
                 let noop = () => {};
                 event.onUpdate = noop;
                 event.resetState();
-                expect(event.initialState).toEqual('hello');
+                expect(event.initialState).toBe(false);
             })
         })
     });
