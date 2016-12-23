@@ -13,7 +13,7 @@ describe('IO', () => {
     describe('listenEvent & eventExists', () => {
         let socket = new IO();
         let eventCount = 0;
-        let event = new ioEvent({name: 'test-event', once: false, count: 0});
+        let event = new ioEvent('test-event');
 
         it('event does not exist', () => {
             expect(socket.eventExists(event)).toBeFalsy();
@@ -25,13 +25,13 @@ describe('IO', () => {
         });
 
         it('listens because its unique', () => {
-            let uniqueEvent = new ioEvent({name: 'test-event', once: true, count: 0});
+            let uniqueEvent = new ioEvent('test-event', true);
             let actuallyTheUnique = socket.listenToEvent(uniqueEvent);
             expect(uniqueEvent).toBe(actuallyTheUnique);
         });
 
         it('cant listen to a triggered unique', () => {
-            let uniqueEvent = new ioEvent({name: 'test-event', once: true, count: 1});
+            let uniqueEvent = new ioEvent('test-event',true, 1);
             let notTheSameUnique = socket.listenToEvent(uniqueEvent);
             expect(uniqueEvent).not.toEqual(notTheSameUnique);
         });
