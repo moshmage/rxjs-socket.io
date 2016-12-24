@@ -38,7 +38,7 @@ export class ioEvent {
     /**
      * The Subscribable (Observable) prop
      * subscribe to this prop to be notified of data update
-     * @type {Observable<ReceivedEvent>}
+     * @type {Observable}
      */
     public event$: any = this._lastEvent.asObservable();
 
@@ -82,9 +82,6 @@ export class ioEvent {
         }
 
         this.clientSocket.on(this.event.name, (data) => this.updateData(data));
-
-        /** This is where magic happens. The callback for every ioEvent is a `SubjectBehavior.next()` call
-         * so we can safely `.subscribe()` to the public `event$` prop that each ioEvent has */
     }
 
     /** unhook is an alias for "off", and since we only have one real callback attached to the Emitter
@@ -95,10 +92,8 @@ export class ioEvent {
     }
 
     /**
-     * This function acts as a prive to make actions when your extended ioEvent
-     * gets new data. if the ioEvent is of type unique you can then use .hook()
-     * so re-hook the event as a .once() again.
-     *  ioEvent.onUpdate will be called with `newData` if it's truthy
+     * Set this to a function value if you want something to run *after*
+     * the value has been updated.
      * @param fn {Function}
      */
     public set onUpdate(fn: Function) {
@@ -120,7 +115,8 @@ export class ioEvent {
     }
 
     /**
-     * updates data with FALSE
+     * Reset state updates the ReplaySubject with the initialState;
+     * If none exists, `false` is used as default
      */
     public resetState() {
         this.updateData(this._initialState);

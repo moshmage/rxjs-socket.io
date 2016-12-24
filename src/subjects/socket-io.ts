@@ -17,7 +17,7 @@ export class IO {
     /**
      * The Subscribable (Observable) prop
      * subscribe to this prop to be notified of data update
-     * @type {Observable<ReceivedEvent>}
+     * @type {Observable}
      */
     public event$: any = this._socketState.asObservable();
 
