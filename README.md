@@ -6,7 +6,7 @@ install with `npm install --save rxjs-socket.io`
 import {IO, ioEvent} from 'rxjs-socket.io'
 
 const socket = new IO();
-let onHelloWorld = new ioEvent({name: "hello-world", once: false, count: 0});
+let onHelloWorld = new ioEvent("hello-world", false, 0);
 
 onHelloWorld = socket.listenToEvent(onHelloWorld);
 socket.connect('http://localhost:1337');
