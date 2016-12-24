@@ -17,7 +17,7 @@ onHelloWorld.event$.subscribe((state) => {
 ```
 
 ## Documentation
-For now, [check the *.d.ts](rxjs-socket.io.d.ts) of the files, as the source is heavily commented;
+For now, [check the *.d.ts](https://gitlab.com/moshmage/rxjs-socket.io/wikis/rxjs-socket.io.d.ts) of the files, as the source is heavily commented;
 When I get a typescript docs generator to run properly without barfing errors about typings, I'll make a proper gl-page. You can help with that if you want to :)
 
 ### Examples
