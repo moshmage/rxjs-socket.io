@@ -7,3 +7,15 @@ all_tests:
   script:
    - npm install
    - npm test
+
+pages:
+  stage: deploy
+  script:
+  - mkdir .public
+  - cp -r doc/ .public
+  - mv .public public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
