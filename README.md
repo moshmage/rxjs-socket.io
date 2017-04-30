@@ -1,19 +1,19 @@
 # RxJs Socket.IO <a href="https://gitlab.com/moshmage/rxjs-socket.io/commits/master"><img alt="build status" src="https://gitlab.com/moshmage/rxjs-socket.io/badges/master/build.svg" /></a> <a href="https://gitlab.com/moshmage/rxjs-socket.io/commits/master"><img alt="coverage report" src="https://gitlab.com/moshmage/rxjs-socket.io/badges/master/coverage.svg" /></a>
 install with `npm install --save rxjs-socket.io`
 
-## Usage
+## Quick Start
 ```typescript
 import {IO, ioEvent} from 'rxjs-socket.io'
+import {Subscription} from 'rxjs/Subscription';
 
 const socket = new IO();
-let onHelloWorld = new ioEvent("hello-world", false, 0);
+const onHelloWorld: ioEvent = new ioEvent("hello-world", false, 0);
+const helloWorld$: Subscription;
 
-onHelloWorld = socket.listenToEvent(onHelloWorld);
-socket.connect('http://localhost:1337');
+this.helloWorld$ = this.socket.listenToEvent(this.onHelloWorld)
+.event$.subscribe((newState) => this.state = newState);
 
-onHelloWorld.event$.subscribe((state) => {
-    console.log('new state', state);
-});
+this.socket.connect('http://localhost:5000');
 ```
 
 ## Documentation

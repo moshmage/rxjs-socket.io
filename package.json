@@ -26,7 +26,7 @@
     "karma-cli": "^1.0.1",
     "karma-jasmine": "^1.1.0",
     "karma-phantomjs-launcher": "^1.0.2",
-    "karma-typescript": "^2.1.5",
+    "karma-typescript": "^3.0.1",
     "socket.io": "^1.7.2",
     "typescript": "^2.1.4"
   },

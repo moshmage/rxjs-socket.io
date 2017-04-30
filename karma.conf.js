@@ -16,8 +16,10 @@ module.exports = function(config) {
 
         reporters: ["progress", "karma-typescript"],
 
-
         karmaTypescriptConfig: {
+            bundlerOptions: {
+                exclude: ["bufferutil", "utf-8-validate"]
+            },
             tsconfig: 'tsconfig.spec.json',
             reports: {
                 "html": "coverage",
