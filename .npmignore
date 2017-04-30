@@ -4,6 +4,7 @@ src/*
 example/*
 spec/*
 coverage/*
+doc/*
 karma.conf.js
 tsconfig*
 typings*
