@@ -17,8 +17,7 @@ this.socket.connect('http://localhost:5000');
 ```
 
 ## Documentation
-For now, [check the *.d.ts](https://gitlab.com/moshmage/rxjs-socket.io/wikis/rxjs-socket.io.d.ts) of the files, as the source is heavily commented;
-When I get a typescript docs generator to run properly without barfing errors about typings, I'll make a proper gl-page. You can help with that if you want to :)
+
 
 ### Examples
 For examples, check the [example repo](https://gitlab.com/moshmage/rxjs-sioc-eample)
@@ -27,6 +26,6 @@ For examples, check the [example repo](https://gitlab.com/moshmage/rxjs-sioc-eam
 - ~~Unit testing~~
 - ~~Example~~
 - ~~Docs~~
-- Proper Documentation
+- ~~Proper Documentation~~
 - Can I get a code review? That'd be neat.
 - ~~Publish~~
