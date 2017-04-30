@@ -27,7 +27,8 @@ export class IO {
 
     /**
      * returns an event by matching ioEvent.name against the provided argument string
-     * @param name {string}
+     * @param name {string} `the name of the event`
+     * @param isUnique {boolean}
      * @returns {ioEvent | boolean}
      */
     private getEvent(name: string, isUnique?: boolean) {
@@ -38,7 +39,6 @@ export class IO {
                 return true;
             }
         });
-
         return foundEvent;
     }
     constructor() {}
@@ -46,7 +46,8 @@ export class IO {
     /** a reference to the raw socket returned from io(), if connected */
     public get raw() { return this.connected && this.socket }
 
-    /** an alias for Socket.emit() */
+    /** an alias for `this.Socket.emit();`
+     * which will only emit if connected. */
     public emit(eventName: string, data?: Object) {
         if (this.connected) {
             this.socket.emit(eventName, data);
@@ -77,6 +78,19 @@ export class IO {
         }
         else ioEvent = this.getEvent(ioEvent.name, ioEvent.isUnique);
         return ioEvent;
+    }
+
+    /**
+     * Removes an ioEvent from the listening queue
+     * @param ioEventName {string}
+     */
+    public unhook(ioEventName: string) {
+        this.events = this.events.filter((event: ioEvent) => {
+            if (event.name === ioEventName) {
+                event.unhook();
+                return false;
+            } else return true;
+        });
     }
 
     /**

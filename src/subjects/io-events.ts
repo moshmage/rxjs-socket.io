@@ -105,7 +105,8 @@ export class ioEvent {
 
     /**
      * Use this to set an initialState to be reset to when connection closes
-     * otherwise, false will be the updating value.
+     * otherwise, false will be the updating value. If your initialState is
+     * set an as Object, the new state will be `Object.assign`ed.
      * @param state {any}
      */
     public set initialState(state: any) {
