@@ -14,10 +14,11 @@ const onHelloWorld: ioEvent = new ioEvent("hello-world");
 
 /** since ioEvent returns an observable in one of its props, lets go ahead and define a subscription*/
 let helloWorld$: Subscription;
+let state;
 
 /** tell socket io to listen to the hello world event and subscribe to the result */
-helloWorld$ = this.socket.listenToEvent(onHelloWorld)
-.event$.subscribe((newState) => this.state = newState);
+helloWorld$ = socket.listenToEvent(onHelloWorld)
+.event$.subscribe((newState) => state = newState);
 
 /** the hello world event we just created will be pushed once the connection is established */
 socket.connect('http://localhost:5000');
@@ -46,17 +47,15 @@ When you issue `IO.connect()`, the `ioEvent`s you did push to the listening queu
 let _eventData: any;
 get state(): any { return this._eventData };
 
-this.socket.unhook('hello-world');
-this.helloWorld$.unsubscribe();
-
-this.onHelloWorld.onUpdate = (newState) => this._eventData = newState;
-this.socket.listenToEvent(this.onHelloWorld);
+/** This function will be ran **after** the `.next()` update */
+onHelloWorld.onUpdate = (newState) => this._eventData = newState;
+socket.listenToEvent(onHelloWorld);
 ```
 
 ```typescript
-this.onHelloWorld.initialState = 1; // 1;
-this.onHelloWorld.initialState = {world: '1'}; // {world: '1'}
-this.onHelloWorld.initialState = {area: '2'}; // {wordl: '1', area: '2'}
+onHelloWorld.initialState = 1; // 1;
+onHelloWorld.initialState = {world: '1'}; // {world: '1'}
+onHelloWorld.initialState = {area: '2'}; // {wordl: '1', area: '2'}
 ```
 
 ```typescript
@@ -69,5 +68,5 @@ const helloWorld$ = this.socket.listenToEvent(onHelloWorld)
 ```
 
 There's a [typings](https://gitlab.com/moshmage/rxjs-socket.io/wikis/rxjs-socket.io.d.ts)
-filter and a typedoc generated [documentation](https://moshmage.gitlab.io/rxjs-socket.io/).
-Anything else, the code is pretty verbose. Go ahead and dive :)
+wiki and a typedoc generated [documentation](https://moshmage.gitlab.io/rxjs-socket.io/).
+Anything else, the code is pretty verbose. Go ahead and dive in :)
