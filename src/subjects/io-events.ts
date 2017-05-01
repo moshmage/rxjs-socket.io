@@ -43,6 +43,13 @@ export class ioEvent {
     /**
      * The Subscribable (Observable) prop
      * subscribe to this prop to be notified of data update
+     *
+     * @usage
+     *
+     * ```
+     * const event = new ioEvent('event');
+     * const event$ = event.$event.subscribe(() => {});
+     * ```
      * @type {Observable}
      */
     public event$: any = this._lastEvent.asObservable();

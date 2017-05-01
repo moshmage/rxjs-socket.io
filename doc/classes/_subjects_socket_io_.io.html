@@ -232,7 +232,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in subjects/socket-io.ts:162</li>
+									<li>Defined in subjects/socket-io.ts:175</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -245,7 +245,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in subjects/socket-io.ts:169</li>
+									<li>Defined in subjects/socket-io.ts:182</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -303,7 +303,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in subjects/socket-io.ts:133</li>
+									<li>Defined in subjects/socket-io.ts:146</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -436,7 +436,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in subjects/socket-io.ts:101</li>
+									<li>Defined in subjects/socket-io.ts:114</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -448,9 +448,15 @@
 								<p>Think of this as a bulk listenToEvent that can be deconstructed.</p>
 								<dl class="tsd-comment-tags">
 									<dt>usage</dt>
-									<dd><p>const {helloWorld$, dondeEsLaBiblioteca$} = this.socket.listen([&#39;hello-world&#39;,{name:&#39;where-is-the-library&#39;, once: true}]);
-											helloWorld$.subscribe(newState =&gt; console.debug(&#39;helloWorld$&#39;,newState));
-										dondeEsLaBiblioteca$.subscribe(newState =&gt; console.debug(&#39;dondeEsLaBiblioteca$&#39;,newState));</p>
+									<dd><pre><code class="lang-typescript">
+<span class="hljs-keyword">const</span> {helloWorld$, dondeEsLaBiblioteca$} = <span class="hljs-keyword">this</span>.socket.listen([
+  <span class="hljs-string">'hello-world'</span>,
+  {name:<span class="hljs-string">'where-is-the-library'</span>, once: <span class="hljs-literal">true</span>}
+]);
+
+helloWorld$.subscribe(<span class="hljs-function"><span class="hljs-params">newState</span> =&gt;</span> <span class="hljs-built_in">console</span>.debug(<span class="hljs-string">'helloWorld$'</span>,newState));
+dondeEsLaBiblioteca$.subscribe(<span class="hljs-function"><span class="hljs-params">newState</span> =&gt;</span> <span class="hljs-built_in">console</span>.debug(<span class="hljs-string">'dondeEsLaBiblioteca$'</span>,newState));
+</code></pre>
 									</dd>
 								</dl>
 							</div>
@@ -474,7 +480,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in subjects/socket-io.ts:76</li>
+									<li>Defined in subjects/socket-io.ts:83</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -482,6 +488,14 @@
 									<p>pushes an ioEvent to be heard and returns the event,
 									or the existing event - if that&#39;s true</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>usage</dt>
+									<dd><pre><code class="lang-typescript">const helloWorld = new ioEvent('hello-world);
+const helloWorld$ = this.listenToEvent(helloWorld)
+  .event$.subcribe(newState =&gt; console.log(newState));
+</code></pre>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -503,7 +517,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in subjects/socket-io.ts:117</li>
+									<li>Defined in subjects/socket-io.ts:130</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">

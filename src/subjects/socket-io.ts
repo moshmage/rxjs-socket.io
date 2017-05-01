@@ -70,6 +70,13 @@ export class IO {
     /**
      * pushes an ioEvent to be heard and returns the event,
      * or the existing event - if that's true
+     * @usage
+     *
+     * ```typescript
+     * const helloWorld = new ioEvent('hello-world);
+     * const helloWorld$ = this.listenToEvent(helloWorld)
+     *   .event$.subcribe(newState => console.log(newState));
+     * ```
      * @param ioEvent
      * @returns {ioEvent}
      */
@@ -91,10 +98,16 @@ export class IO {
      *
      * @usage
      *
-     * const {helloWorld$, dondeEsLaBiblioteca$} = this.socket.listen(['hello-world',{name:'where-is-the-library', once: true}]);
+     *```typescript
+     *
+     * const {helloWorld$, dondeEsLaBiblioteca$} = this.socket.listen([
+     *   'hello-world',
+     *   {name:'where-is-the-library', once: true}
+     * ]);
+     *
      * helloWorld$.subscribe(newState => console.debug('helloWorld$',newState));
      * dondeEsLaBiblioteca$.subscribe(newState => console.debug('dondeEsLaBiblioteca$',newState));
-     *
+     *```
      * @param eventsArray {(string|IoEventInfo)[]}
      * @returns {Subscription[]}
      */
