@@ -9,7 +9,7 @@ export class ioEvent {
 
     /** the actual Rx Subject */
     private _lastEvent: ReplaySubject<Object> = new ReplaySubject<Object>(1);
-    private _initialState: any = false;
+
 
     /** a reference to the last received event */
     public lastEvent: Object = {};
@@ -27,11 +27,16 @@ export class ioEvent {
     }
     private _onUpdate: Function;
 
+    /**
+     * Event information
+     * @type {IoEventInfo}
+     */
     public event: IoEventInfo = {name: '', count: 0, once: false};
-    constructor(name: string, isUnique?:boolean, count?:number) {
+    constructor(name: string, initialState?:string|Object, isUnique?:boolean, count?:number) {
         this.event.name = name;
-        this.event.count = count || 0;
-        this.event.once = isUnique || false;
+        if (count) this.event.count = count;
+        if (isUnique !== undefined) this.event.once = isUnique;
+        if (initialState) this.initialState = initialState;
         this.clientSocket = false;
     }
 
@@ -97,11 +102,12 @@ export class ioEvent {
      * @param fn {Function}
      */
     public set onUpdate(fn: Function) {
-        if (typeof fn !== "function") throw Error('ioEvent onUpdate prop needs to be of type Function')
+        if (typeof fn !== "function") throw Error('ioEvent onUpdate prop needs to be of type Function');
         this._onUpdate = fn;
     }
 
-    public get initialState():any {return this._initialState;}
+    private _initialState: any = false;
+    public get initialState(): string|Object {return this._initialState;}
 
     /**
      * Use this to set an initialState to be reset to when connection closes
@@ -109,7 +115,7 @@ export class ioEvent {
      * set an as Object, the new state will be `Object.assign`ed.
      * @param state {any}
      */
-    public set initialState(state: any) {
+    public set initialState(state: string|Object) {
         if (!this._initialState) this._initialState = state;
         else if (isObject(this._initialState)) this._initialState = assign(this._initialState,state);
         else this._initialState = state;

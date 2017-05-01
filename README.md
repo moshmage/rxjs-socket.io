@@ -1,7 +1,36 @@
 # RxJs Socket.IO <a href="https://gitlab.com/moshmage/rxjs-socket.io/commits/master"><img alt="build status" src="https://gitlab.com/moshmage/rxjs-socket.io/badges/master/build.svg" /></a> <a href="https://gitlab.com/moshmage/rxjs-socket.io/commits/master"><img alt="coverage report" src="https://gitlab.com/moshmage/rxjs-socket.io/badges/master/coverage.svg" /></a>
 install with `npm install --save rxjs-socket.io`
+## Quick Start
+```typescript
+import {IO} from 'rxjs-socket.io'
+const Socket = new IO();
 
-## Default usage
+const {helloWorld$, dondeEsLaBiblioteca$} = this.socket.listen([
+  'hello-world',
+  {name: 'where-is-the-library', once: true, initialState: 'not-found'},
+]);
+
+helloWorld$.subscribe(newState => console.debug('helloWorld$',newState));
+dondeEsLaBiblioteca$.subscribe(newState => console.debug('dondeEsLaBiblioteca$',newState));
+
+Socket.connect('http://localhost:5000');
+```
+
+## What? Why?!
+rxjs-socket.io was made to wrap RxJs and Socket.IO onto a standardized api of sorts. It achieves this by storing
+the Events you feed it between connections, in memory. This is made so you only need to create the subscriptions
+once and from then on your events can be subscribed to, unsusbcribed or turned off when the need arises.
+
+The core idea is that we separate events and connection into two different steps; We create and feed events to an
+array that will be then looped when the socket connects and have the population of the array fed in turn to socket.io.
+It will turn the raw event callback from socket.io onto a `ioEvent` Class which owns a RxJs ReplaySubject proprety 
+that you can then control, along with information about the event.
+
+Check the [IO Class](https://moshmage.gitlab.io/rxjs-socket.io/classes/_subjects_socket_io_.io.html) and [ioEvent](https://moshmage.gitlab.io/rxjs-socket.io/classes/_subjects_io_events_.ioevent.html) for 
+in depth understanding of the methods.
+
+
+### Default usage
 ```typescript
 import {IO, ioEvent} from 'rxjs-socket.io'
 import {Subscription} from 'rxjs/Subscription';
@@ -24,24 +53,7 @@ helloWorld$ = socket.listenToEvent(onHelloWorld)
 socket.connect('http://localhost:5000');
 ```
 
-#### What and Why
-rxjs-socket.io is a wrapper and a moduler around socket.io and rxjs.
-It was made because I was tired of having to write an "event moduler" over and over again whenever I start a new project.    
-I decided I'd write one that would fit all my future projects, while reaching a standard of sorts while I'm at it. 
-
-The [`IO`](https://moshmage.gitlab.io/rxjs-socket.io/classes/_subjects_socket_io_.io.html) Class will be responsible by storing which events you want to be subscribed to and update them through 
-`next` when those are triggered. Since we store the events into memory, when you disconnect and reconnect there's 
-no need to make a new event.
-
-These events are created via the [`ioEvent`](https://moshmage.gitlab.io/rxjs-socket.io/classes/_subjects_io_events_.ioevent.html) Class and pushed via [`IO.listenToEvent`](https://moshmage.gitlab.io/rxjs-socket.io/classes/_subjects_socket_io_.io.html#listentoevent). `ioEvents` can have the
-same name but are always unique. That is, even you construct 2 ioEvents with the same name and made `IO.listenToEvent()`
-**only one of those** would be pushed into the listening queue. Since we are using subscriptions, there's no need to
-have two events for different situations; Just have the components be responsible for the handling of the event result.
-
-When you issue `IO.connect()`, the `ioEvent`s you did push to the listening queue will be heard via socket.io methods 
-`on` or `once` depending on if you made it a unique event or not.
-
-#### Unusual usages
+### Unusual usages
 
 ```typescript
 let _eventData: any;

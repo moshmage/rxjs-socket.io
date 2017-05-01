@@ -1,7 +1,9 @@
 import {ioEvent} from "./io-events";
-import {SocketState} from "./../interfaces/socket-io";
+import {IoEventInfo, SocketState} from './../interfaces/socket-io';
 import {ReplaySubject} from 'rxjs/ReplaySubject';
 import * as io from 'socket.io-client';
+import {isObject} from 'rxjs/util/isObject';
+import {Subscription} from 'rxjs';
 
 const SOCKET_URL = "http://localhost:5000";
 
@@ -79,6 +81,34 @@ export class IO {
         else ioEvent = this.getEvent(ioEvent.name, ioEvent.isUnique);
         return ioEvent;
     }
+
+    /**
+     * A function that receives an array of either strings or IoEventInfo
+     * and returns the equivalent subscription after having transformed the
+     * input into a @ioEvent and having issued `this.listenToEvent`.
+     *
+     * Think of this as a bulk listenToEvent that can be deconstructed.
+     *
+     * @usage
+     *
+     * const {helloWorld$, dondeEsLaBiblioteca$} = this.socket.listen(['hello-world',{name:'where-is-the-library', once: true}]);
+     * helloWorld$.subscribe(newState => console.debug('helloWorld$',newState));
+     * dondeEsLaBiblioteca$.subscribe(newState => console.debug('dondeEsLaBiblioteca$',newState));
+     *
+     * @param eventsArray {(string|IoEventInfo)[]}
+     * @returns {Subscription[]}
+     */
+    public listen(eventsArray: any[]): Subscription[] {
+        return eventsArray.map((event:string|IoEventInfo) => {
+            let _event: ioEvent;
+            if (isObject(event)) {
+                let type = <IoEventInfo>event;
+                _event = new ioEvent(type.name, type.once, type.count);
+            } else _event = new ioEvent(event);
+            let event$ = this.listenToEvent(_event).event$;
+            return event$;
+        });
+    };
 
     /**
      * Removes an ioEvent from the listening queue
