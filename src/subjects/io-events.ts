@@ -32,7 +32,7 @@ export class ioEvent {
      * @type {IoEventInfo}
      */
     public event: IoEventInfo = {name: '', count: 0, once: false};
-    constructor(name: string, initialState?:string|Object, isUnique?:boolean, count?:number) {
+    constructor(name: string, isUnique?:boolean, count?:number, initialState?:string|Object) {
         this.event.name = name;
         if (count) this.event.count = count;
         if (isUnique !== undefined) this.event.once = isUnique;
