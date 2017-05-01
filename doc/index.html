@@ -66,7 +66,31 @@
 			<div class="tsd-panel tsd-typography">
 				<h1 id="rxjs-socket-io-a-href-https-gitlab-com-moshmage-rxjs-socket-io-commits-master-img-alt-build-status-src-https-gitlab-com-moshmage-rxjs-socket-io-badges-master-build-svg-a-a-href-https-gitlab-com-moshmage-rxjs-socket-io-commits-master-img-alt-coverage-report-src-https-gitlab-com-moshmage-rxjs-socket-io-badges-master-coverage-svg-a-">RxJs Socket.IO <a href="https://gitlab.com/moshmage/rxjs-socket.io/commits/master"><img alt="build status" src="https://gitlab.com/moshmage/rxjs-socket.io/badges/master/build.svg" /></a> <a href="https://gitlab.com/moshmage/rxjs-socket.io/commits/master"><img alt="coverage report" src="https://gitlab.com/moshmage/rxjs-socket.io/badges/master/coverage.svg" /></a></h1>
 				<p>install with <code>npm install --save rxjs-socket.io</code></p>
-				<h2 id="default-usage">Default usage</h2>
+				<h2 id="quick-start">Quick Start</h2>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> {IO} <span class="hljs-keyword">from</span> <span class="hljs-string">'rxjs-socket.io'</span>
+<span class="hljs-keyword">const</span> Socket = <span class="hljs-keyword">new</span> IO();
+
+<span class="hljs-keyword">const</span> {helloWorld$, dondeEsLaBiblioteca$} = <span class="hljs-keyword">this</span>.socket.listen([
+  <span class="hljs-string">'hello-world'</span>,
+  {name: <span class="hljs-string">'where-is-the-library'</span>, once: <span class="hljs-literal">true</span>, initialState: <span class="hljs-string">'not-found'</span>},
+]);
+
+helloWorld$.subscribe(<span class="hljs-function"><span class="hljs-params">newState</span> =&gt;</span> <span class="hljs-built_in">console</span>.debug(<span class="hljs-string">'helloWorld$'</span>,newState));
+dondeEsLaBiblioteca$.subscribe(<span class="hljs-function"><span class="hljs-params">newState</span> =&gt;</span> <span class="hljs-built_in">console</span>.debug(<span class="hljs-string">'dondeEsLaBiblioteca$'</span>,newState));
+
+Socket.connect(<span class="hljs-string">'http://localhost:5000'</span>);
+</code></pre>
+				<h2 id="what-why-">What? Why?!</h2>
+				<p>rxjs-socket.io was made to wrap RxJs and Socket.IO onto a standardized api of sorts. It achieves this by storing
+					the Events you feed it between connections, in memory. This is made so you only need to create the subscriptions
+				once and from then on your events can be subscribed to, unsusbcribed or turned off when the need arises.</p>
+				<p>The core idea is that we separate events and connection into two different steps; We create and feed events to an
+					array that will be then looped when the socket connects and have the population of the array fed in turn to socket.io.
+					It will turn the raw event callback from socket.io onto a <code>ioEvent</code> Class which owns a RxJs ReplaySubject proprety
+				that you can then control, along with information about the event.</p>
+				<p>Check the <a href="https://moshmage.gitlab.io/rxjs-socket.io/classes/_subjects_socket_io_.io.html">IO Class</a> and <a href="https://moshmage.gitlab.io/rxjs-socket.io/classes/_subjects_io_events_.ioevent.html">ioEvent</a> for
+				in depth understanding of the methods.</p>
+				<h3 id="default-usage">Default usage</h3>
 				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> {IO, ioEvent} <span class="hljs-keyword">from</span> <span class="hljs-string">'rxjs-socket.io'</span>
 <span class="hljs-keyword">import</span> {Subscription} <span class="hljs-keyword">from</span> <span class="hljs-string">'rxjs/Subscription'</span>;
 
@@ -78,39 +102,26 @@
 
 <span class="hljs-comment">/** since ioEvent returns an observable in one of its props, lets go ahead and define a subscription*/</span>
 <span class="hljs-keyword">let</span> helloWorld$: Subscription;
+<span class="hljs-keyword">let</span> state;
 
 <span class="hljs-comment">/** tell socket io to listen to the hello world event and subscribe to the result */</span>
-helloWorld$ = <span class="hljs-keyword">this</span>.socket.listenToEvent(onHelloWorld)
-.event$.subscribe(<span class="hljs-function">(<span class="hljs-params">newState</span>) =&gt;</span> <span class="hljs-keyword">this</span>.state = newState);
+helloWorld$ = socket.listenToEvent(onHelloWorld)
+.event$.subscribe(<span class="hljs-function">(<span class="hljs-params">newState</span>) =&gt;</span> state = newState);
 
 <span class="hljs-comment">/** the hello world event we just created will be pushed once the connection is established */</span>
 socket.connect(<span class="hljs-string">'http://localhost:5000'</span>);
 </code></pre>
-				<h4 id="what-and-why">What and Why</h4>
-				<p>rxjs-socket.io is a wrapper and a moduler around socket.io and rxjs.
-				It was made because I was tired of having to write an &quot;event moduler&quot; over and over again whenever I start a new project.<br>I decided I&#39;d write one that would fit all my future projects, while reaching a standard of sorts while I&#39;m at it. </p>
-				<p>The <a href=""><code>IO</code></a> Class will be responsible by storing which events you want to be subscribed to and update them through
-					<code>next</code> when those are triggered. Since we store the events into memory, when you disconnect and reconnect there&#39;s
-				no need to make a new event.</p>
-				<p>These events are created via the <a href=""><code>ioEvent</code></a> Class and pushed via <a href=""><code>IO.listenToEvent</code></a>. <code>ioEvents</code> can have the
-					same name but are always unique. That is, even you construct 2 ioEvents with the same name and made <code>IO.listenToEvent()</code>
-					<strong>only one of those</strong> would be pushed into the listening queue. Since we are using subscriptions, there&#39;s no need to
-				have two events for different situations; Just have the components be responsible for the handling of the event result.</p>
-				<p>When you issue <code>IO.connect()</code>, the <code>ioEvent</code>s you did push to the listening queue will be heard via socket.io methods
-				<code>on</code> or <code>once</code> depending on if you made it a unique event or not.</p>
-				<h4 id="unusual-usages">Unusual usages</h4>
+				<h3 id="unusual-usages">Unusual usages</h3>
 				<pre><code class="lang-typescript"><span class="hljs-keyword">let</span> _eventData: <span class="hljs-built_in">any</span>;
 <span class="hljs-keyword">get</span> state(): <span class="hljs-built_in">any</span> { <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._eventData };
 
-<span class="hljs-keyword">this</span>.socket.unhook(<span class="hljs-string">'hello-world'</span>);
-<span class="hljs-keyword">this</span>.helloWorld$.unsubscribe();
-
-<span class="hljs-keyword">this</span>.onHelloWorld.onUpdate = <span class="hljs-function">(<span class="hljs-params">newState</span>) =&gt;</span> <span class="hljs-keyword">this</span>._eventData = newState;
-<span class="hljs-keyword">this</span>.socket.listenToEvent(<span class="hljs-keyword">this</span>.onHelloWorld);
+<span class="hljs-comment">/** This function will be ran **after** the `.next()` update */</span>
+onHelloWorld.onUpdate = <span class="hljs-function">(<span class="hljs-params">newState</span>) =&gt;</span> <span class="hljs-keyword">this</span>._eventData = newState;
+socket.listenToEvent(onHelloWorld);
 </code></pre>
-				<pre><code class="lang-typescript"><span class="hljs-keyword">this</span>.onHelloWorld.initialState = <span class="hljs-number">1</span>; <span class="hljs-comment">// 1;</span>
-<span class="hljs-keyword">this</span>.onHelloWorld.initialState = {world: <span class="hljs-string">'1'</span>}; <span class="hljs-comment">// {world: '1'}</span>
-<span class="hljs-keyword">this</span>.onHelloWorld.initialState = {area: <span class="hljs-string">'2'</span>}; <span class="hljs-comment">// {wordl: '1', area: '2'}</span>
+				<pre><code class="lang-typescript">onHelloWorld.initialState = <span class="hljs-number">1</span>; <span class="hljs-comment">// 1;</span>
+onHelloWorld.initialState = {world: <span class="hljs-string">'1'</span>}; <span class="hljs-comment">// {world: '1'}</span>
+onHelloWorld.initialState = {area: <span class="hljs-string">'2'</span>}; <span class="hljs-comment">// {wordl: '1', area: '2'}</span>
 </code></pre>
 				<pre><code class="lang-typescript"><span class="hljs-keyword">const</span> onHelloWorld = <span class="hljs-keyword">new</span> ioEvent(<span class="hljs-string">'hello-world'</span>);
 
@@ -119,8 +130,9 @@ socket.connect(<span class="hljs-string">'http://localhost:5000'</span>);
 <span class="hljs-keyword">const</span> helloWorld$ = <span class="hljs-keyword">this</span>.socket.listenToEvent(onHelloWorld)
     .event$.suscribe(checkLastEvent);
 </code></pre>
-				<p>There are way more oddities, you can check the <a href="https://gitlab.com/moshmage/rxjs-socket.io/wikis/rxjs-socket.io.d.ts">typings</a>
-				or the <a href="https://moshmage.gitlab.io/rxjs-socket.io/">documentation</a> generated by typedoc.</p>
+				<p>There&#39;s a <a href="https://gitlab.com/moshmage/rxjs-socket.io/wikis/rxjs-socket.io.d.ts">typings</a>
+					wiki and a typedoc generated <a href="https://moshmage.gitlab.io/rxjs-socket.io/">documentation</a>.
+				Anything else, the code is pretty verbose. Go ahead and dive in :)</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
