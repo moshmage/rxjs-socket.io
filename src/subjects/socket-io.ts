@@ -1,9 +1,7 @@
 import {ioEvent} from "./io-events";
-import {IoEventInfo, SocketState} from './../interfaces/socket-io';
-import {ReplaySubject} from 'rxjs/ReplaySubject';
+import {IoEventInfo, SocketState} from '../interfaces/socket-io';
 import * as io from 'socket.io-client';
-import {isObject} from 'rxjs/util/isObject';
-import {Subscription} from 'rxjs';
+import {Observable, Subject, Subscription} from 'rxjs';
 
 const SOCKET_URL = "http://localhost:5000";
 
@@ -14,7 +12,7 @@ export class IO {
     /** events will be used to push which events we should be listening to */
     private events: ioEvent[] = [];
 
-    private _socketState: ReplaySubject<SocketState> = new ReplaySubject<SocketState>(1);
+    private _socketState = new Subject<SocketState>();
 
     /**
      * The Subscribable (Observable) prop
@@ -34,17 +32,10 @@ export class IO {
      * @returns {ioEvent | boolean}
      */
     private getEvent(name: string, isUnique?: boolean) {
-        let foundEvent;
-        this.events.some(ioEvent => {
-            if (isUnique === ioEvent.isUnique && name === ioEvent.name) {
-                foundEvent = ioEvent;
-                return true;
-            }
-        });
-        return foundEvent;
+        return this.events.find(ioEvent => isUnique === ioEvent.isUnique && name === ioEvent.name);
     }
     constructor() {}
-    
+
     /** a reference to the raw socket returned from io(), if connected */
     public get raw() { return this.connected && this.socket }
 
@@ -77,10 +68,10 @@ export class IO {
      * const helloWorld$ = this.listenToEvent(helloWorld)
      *   .event$.subcribe(newState => console.log(newState));
      * ```
-     * @param ioEvent
-     * @returns {ioEvent}
+     * @param ioEvent<T>
+     * @returns {ioEvent<T>}
      */
-    public listenToEvent(ioEvent: ioEvent) :ioEvent {
+    public listenToEvent<T>(ioEvent: ioEvent<T>):ioEvent<T> {
         if (!this.eventExists(ioEvent)) {
             this.events.push(ioEvent);
             if (this.connected) ioEvent.hook(this.socket)
@@ -111,15 +102,15 @@ export class IO {
      * @param eventsArray {(string|IoEventInfo)[]}
      * @returns {Subscription[]}
      */
-    public listen(eventsArray: any[]): Subscription[] {
+    public listen(eventsArray: Array<string|IoEventInfo>): Observable<string|IoEventInfo>[] {
         return eventsArray.map((event:string|IoEventInfo) => {
             let _event: ioEvent;
-            if (isObject(event)) {
+            if (typeof event !== 'string') {
                 let type = <IoEventInfo>event;
                 _event = new ioEvent(type.name, type.once, type.count);
             } else _event = new ioEvent(event);
-            let event$ = this.listenToEvent(_event).event$;
-            return event$;
+
+            return this.listenToEvent(_event).event$;
         });
     };
 
@@ -155,7 +146,7 @@ export class IO {
             this.events.forEach(ioEvent => {
                 /** this is where we hook our previously new()ed ioEvents to the socket.
                  * This is so we can have one listener per event. as opposed to one event
-                 * to all listeners (that would kinda defeat the "io" part of "SocketIO")
+                 * to all listeners
                  * */
                 ioEvent.hook(this.socket);
             });
@@ -163,7 +154,7 @@ export class IO {
             this.socket.on('disconnect', () => {
                 this.connected = false;
                 /** call reset state on disconnection */
-                this.events.forEach(ioEvent => ioEvent.resetState());
+                this.events.forEach(ioEvent => ioEvent.initialState !== undefined && ioEvent.resetState());
             })
         });
     };
@@ -186,5 +177,5 @@ export class IO {
         this._connected = value;
         this._socketState.next({connected: value});
     };
-    
+
 }

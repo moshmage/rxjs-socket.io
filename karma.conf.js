@@ -11,21 +11,24 @@ module.exports = function(config) {
         ],
 
         preprocessors: {
-            "**/*.ts": ["karma-typescript"]
+            "src/**/*.ts": ["karma-typescript"]
         },
 
         reporters: ["progress", "karma-typescript"],
 
         karmaTypescriptConfig: {
-            bundlerOptions: {
-                exclude: ["bufferutil", "utf-8-validate"]
-            },
             tsconfig: 'tsconfig.spec.json',
             reports: {
                 "html": "coverage",
                 "text-summary": "" // destination "" will redirect output to the console
             }
         },
-        browsers: ["PhantomJS"]
+        browsers: ['ChromeHeadlessNoSandbox'],
+        customLaunchers: {
+            ChromeHeadlessNoSandbox: {
+                base: 'ChromeHeadless',
+                flags: ['--no-sandbox']
+            }
+        },
     });
 };
