@@ -10,7 +10,7 @@
     "prebuild": "npm run test",
     "build": "tsc",
     "build-local": "tsc",
-    "doc": "typedoc --out ./docs --mode modules"
+    "doc": "typedoc --out ./doc --mode modules"
   },
   "author": "MoshMage <moshmage@gmail.com> (https://moshmage.gitlab.io/#/)",
   "license": "ISC",
