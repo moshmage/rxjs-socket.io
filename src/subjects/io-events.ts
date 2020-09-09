@@ -1,25 +1,23 @@
-import {IoEventInfo} from "./../interfaces/socket-io";
-import {ReplaySubject} from 'rxjs/ReplaySubject';
-import {isObject} from "rxjs/util/isObject";
-import {assign} from "rxjs/util/assign";
+import {IoEventInfo} from '../interfaces/socket-io';
+import {Subject} from 'rxjs';
 
-export class ioEvent {
+export class ioEvent<T = any> {
     /** this is the reference for a io() value */
     private clientSocket: any;
 
     /** the actual Rx Subject */
-    private _lastEvent: ReplaySubject<Object> = new ReplaySubject<Object>(1);
+    private _lastEvent = new Subject<T>();
 
 
     /** a reference to the last received event */
-    public lastEvent: Object = {};
-    
+    public lastEvent: T;
+
     /**
      * Responsible for eventCounting and updating data on the ReplaySubject
      * if _onUpdate exists, it will be called with newData as argument
      * @param newData
      */
-    private updateData(newData) {
+    private updateData(newData: T) {
         this._lastEvent.next(newData);
         this.event.count++; /** we will be using "count" has a way of knowing if it has been triggered. */
         if (this._onUpdate) this._onUpdate(newData); /** a way for us to extend properly */
@@ -50,9 +48,8 @@ export class ioEvent {
      * const event = new ioEvent('event');
      * const event$ = event.$event.subscribe(() => {});
      * ```
-     * @type {Observable}
      */
-    public event$: any = this._lastEvent.asObservable();
+    public event$ = this._lastEvent.asObservable();
 
     /**
      * returns whether the event has triggered or not
@@ -113,7 +110,7 @@ export class ioEvent {
         this._onUpdate = fn;
     }
 
-    private _initialState: any = false;
+    private _initialState: any = undefined;
     public get initialState(): string|Object {return this._initialState;}
 
     /**
@@ -124,7 +121,7 @@ export class ioEvent {
      */
     public set initialState(state: string|Object) {
         if (!this._initialState) this._initialState = state;
-        else if (isObject(this._initialState)) this._initialState = assign(this._initialState,state);
+        else if (typeof this._initialState === 'object' && !Array.isArray(this._initialState)) this._initialState = Object.assign(this._initialState, state);
         else this._initialState = state;
     }
 

@@ -3,7 +3,8 @@
  */
 import {IO} from './subjects/socket-io';
 import {ioEvent} from './subjects/io-events';
-import {assign} from "rxjs/util/assign";
+
+// @ts-ignore
 
 describe('IO', () => {
     it ('is instance of itself', () => {
@@ -11,45 +12,48 @@ describe('IO', () => {
         expect(socket instanceof IO).toBe(true);
     });
     describe('listenEvent & eventExists', () => {
-        let socket = new IO();
-        let eventCount = 0;
-        let event = new ioEvent('test-event');
+        const socket = new IO();
+        const eventCount = 0;
+        const event = new ioEvent('test-event');
+        const uniqueEvent = new ioEvent('test-event', true);
 
         it('event does not exist', () => {
-            expect(socket.eventExists(event)).toBeFalsy();
+            const newEvent = new ioEvent('new-event');
+            expect(socket.eventExists(newEvent)).toBeFalsy();
         });
 
         it('it returns the same event, because it already exists', () => {
-            let sameEvent = socket.listenToEvent(event);
+            const sameEvent = socket.listenToEvent(event);
             expect(event).toEqual(sameEvent);
+            expect(socket.eventExists(event)).toBeTruthy();
         });
 
         it('listens because its unique', () => {
-            let uniqueEvent = new ioEvent('test-event', true);
-            let actuallyTheUnique = socket.listenToEvent(uniqueEvent);
-            expect(uniqueEvent).toBe(actuallyTheUnique);
+            const uniqueHook = socket.listenToEvent(uniqueEvent);
+            expect(uniqueEvent).toBe(uniqueHook);
         });
 
-        it('cant listen to a triggered unique', () => {
-            let uniqueEvent = new ioEvent('test-event',true, 1);
-            let notTheSameUnique = socket.listenToEvent(uniqueEvent);
-            expect(uniqueEvent).not.toEqual(notTheSameUnique);
+        it('returns the same unique event', () => {
+            const uniqueHook = socket.listenToEvent(uniqueEvent);
+            const [anotherUniqueListen] = socket.listen([uniqueEvent]);
+            expect(anotherUniqueListen).toEqual(uniqueHook.event$);
         });
 
     });
     describe('Public coverage', () => {
 
         it("raw", () => {
-            let spySocket = new IO();
+            const spySocket = new IO();
             expect(spySocket.raw).toBeFalsy();
+            // @ts-ignore
             spyOn(spySocket, 'connected').and.returnValue(true);
             expect(spySocket.raw).toBeUndefined(); /** is undefined because .connect() wasn't issued */
 
         });
 
         it('socketState updating to true', () => {
-            let spySocket = new IO();
-            let event$ = spySocket.event$;
+            const spySocket = new IO();
+            const event$ = spySocket.event$;
             spySocket.connected = true;
 
             event$.subscribe((newValue) => {
@@ -58,13 +62,13 @@ describe('IO', () => {
         });
 
         it ('SocketState updating to false', () => {
-            let spySocket = new IO();
-            let event$ = spySocket.event$;
-            assign(spySocket, {
+            const spySocket = new IO();
+            const event$ = spySocket.event$;
+            Object.assign(spySocket, {
                 _connected: true,
                 socket: {disconnect() {}}
             });
-            spyOn(spySocket.socket, 'disconnect').and.callThrough();
+            spyOn((spySocket as any).socket, 'disconnect').and.callThrough();
 
             event$.subscribe((newValue) => {
                 expect({connected: false}).toEqual(newValue);
@@ -74,14 +78,14 @@ describe('IO', () => {
         });
 
         it('Emit', () => {
-            let spySocket = new IO();
+            const spySocket = new IO();
             spySocket.connected = true;
-            assign(spySocket, {socket: {emit() {}}});
+            Object.assign(spySocket, {socket: {emit() {}}});
 
-            spyOn(spySocket.socket, 'emit').and.callThrough();
+            spyOn((spySocket as any).socket, 'emit').and.callThrough();
 
             spySocket.emit('test-event',{});
-            expect(spySocket.socket.emit.calls.count()).toBe(1);
+            expect((spySocket as any).socket.emit.calls.count()).toBe(1);
 
         });
     });
@@ -97,7 +101,7 @@ describe('IO', () => {
         // }
 
         let socket = new IO();
-        setUpTestServer();
+        // setUpTestServer();
 
         it('connects', () => {
             console.log('testing connects');
@@ -111,13 +115,13 @@ describe('IO', () => {
 });
 
 describe('ioEvent', () => {
-    let socket = new IO();
-    let eventCount = 0;
+    const socket = new IO();
+    const eventCount = 0;
     let event;
     describe('Public coverage', () => {
         beforeEach(() => {
             event = new ioEvent('test-event');
-            assign(event, {clientSocket: {once() {}, on() {}, off() {} }})
+            Object.assign(event, {clientSocket: {once() {}, on() {}, off() {} }})
         });
 
         it('hooks, once', () => {
@@ -142,7 +146,7 @@ describe('ioEvent', () => {
             event.hook(newClientSocket.clientSocket);
 
             expect(event.clientSocket.on.calls.count()).toBe(1);
-            expect(newClientSocket.clientSocket.on.calls.count()).toBe(1);
+            expect((newClientSocket.clientSocket.on as any).calls.count()).toBe(1);
         });
 
         it('does not unhook because once', () => {
@@ -166,26 +170,26 @@ describe('ioEvent', () => {
         });
 
         describe('initialState', () => {
-            it ('is false', () => {
-                expect(event.initialState).toBe(false);
+            it ('is undefined', () => {
+                expect(event.initialState).toBe(undefined);
             });
-            
+
             it('is assignable and object', () => {
                 event.initialState = {hello: 'world'};
                 event.initialState = {world: 'hello'};
                 expect(event.initialState).toEqual({hello: 'world', world: 'hello'});
             });
-            
+
             it('is assignable and not a object, so rewritten', () => {
                 event.initialState = 'hello';
                 expect(event.initialState).toEqual('hello');
             });
-            
+
             it('resets state (and cover onUpdateData on the way)', () => {
-                let noop = () => {};
+                const noop = () => {};
                 event.onUpdate = noop;
                 event.resetState();
-                expect(event.initialState).toBe(false);
+                expect(event.initialState).toBe(undefined);
             })
         })
     });
