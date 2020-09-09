@@ -11,9 +11,6 @@ all_tests:
 pages:
   stage: deploy
   script:
-    - npm i -g typescript
-    - npm i -g typedoc
-    - npm run doc
     - mkdir .public
     - cp -r doc/* .public
     - mv .public public
