@@ -1,6 +1,6 @@
 {
   "name": "rxjs-socket.io",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "wraps socket.io-client into replay subjects called ioEvents",
   "main": "dist/index.js",
   "scripts": {
@@ -28,7 +28,7 @@
     "karma-cli": "^2.0.0",
     "karma-jasmine": "^4.0.1",
     "karma-phantomjs-launcher": "^1.0.4",
-    "karma-typescript": "^3.0.1",
+    "karma-typescript": "^5.1.0",
     "socket.io": "^2.3.0",
     "typedoc": "^0.18.0",
     "typescript": "~3.9.2"
